@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{
   --navy:#0F2D5E;--navy-md:#1A4080;--navy-lt:#E8EDF7;
@@ -389,43 +390,7 @@ let editId = null;
 let activeCat = 'All';
 let pendingPhoto = null; // base64 for current edit
 
-// ── IndexedDB ──
-let db;
-function openDB() {
-  return new Promise((res, rej) => {
-    const req = indexedDB.open('raghav-quotes', 2);
-    req.onupgradeneeded = e => {
-      const d = e.target.result;
-      if (!d.objectStoreNames.contains('products')) d.createObjectStore('products', { keyPath: 'id' });
-    };
-    req.onsuccess = e => { db = e.target.result; res(db); };
-    req.onerror = e => rej(e);
-  });
-}
-function dbGetAll(store) {
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readonly');
-    const req = tx.objectStore(store).getAll();
-    req.onsuccess = () => res(req.result);
-    req.onerror = () => rej(req.error);
-  });
-}
-function dbPut(store, obj) {
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    const req = tx.objectStore(store).put(obj);
-    req.onsuccess = () => res();
-    req.onerror = () => rej(req.error);
-  });
-}
-function dbDelete(store, key) {
-  return new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    const req = tx.objectStore(store).delete(key);
-    req.onsuccess = () => res();
-    req.onerror = () => rej(req.error);
-  });
-}
+// IndexedDB replaced by Supabase
 
 // ── Helpers ──
 function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -629,7 +594,7 @@ async function saveProduct() {
   if (!name) { toast('Please enter a product name'); return; }
   const price = parseFloat(document.getElementById('f-price').value) || 0;
   const prod = {
-    id: editId || Date.now(),
+    id: editId || null, _new: !editId,
     name, cat: document.getElementById('f-cat').value.trim(),
     desc: document.getElementById('f-desc').value.trim(),
     photo: pendingPhoto || null,
@@ -638,26 +603,35 @@ async function saveProduct() {
     hsn: document.getElementById('f-hsn').value.trim(),
     unit: document.getElementById('f-unit').value.trim(),
   };
-  await dbPut('products', prod);
-  if (editId) {
-    const i = products.findIndex(p => p.id === editId);
-    if (i >= 0) products[i] = prod; else products.unshift(prod);
-  } else {
-    products.unshift(prod);
+  try {
+    toast('Saving...');
+    const savedId = await sbSaveProduct(prod);
+    prod.id = savedId; prod._new = false;
+    if (editId) {
+      const i = products.findIndex(p => p.id === editId);
+      if (i >= 0) products[i] = prod; else products.unshift(prod);
+    } else {
+      products.unshift(prod);
+    }
+    toast(editId ? 'Product updated' : 'Product saved');
+    editId = null; pendingPhoto = null;
+    nav('s-home');
+  } catch(e) {
+    toast('Error saving product — check connection');
+    console.error(e);
   }
-  toast(editId ? 'Product updated' : 'Product saved');
-  editId = null; pendingPhoto = null;
-  nav('s-home');
 }
 async function deleteProduct() {
   if (!editId) return;
   if (!confirm('Delete this product?')) return;
-  await dbDelete('products', editId);
-  products = products.filter(p => p.id !== editId);
-  delete cart[editId]; delete discounts[editId];
-  toast('Product deleted');
-  editId = null;
-  nav('s-home');
+  try {
+    await sbDeleteProduct(editId);
+    products = products.filter(p => p.id !== editId);
+    delete cart[editId]; delete discounts[editId];
+    toast('Product deleted');
+    editId = null;
+    nav('s-home');
+  } catch(e) { toast('Error deleting — check connection'); }
 }
 
 // ── Quote tabs ──
@@ -753,13 +727,13 @@ function renderQuote() {
 }
 
 // ── Submit preview + WA message ──
-function buildQuoteText(forHQ = true) {
+function buildQuoteText(forHQ = true, overrideRef = null) {
   const custName = document.getElementById('c-name').value.trim() || 'Customer';
   const contact  = document.getElementById('c-contact').value.trim();
   const phone    = document.getElementById('c-phone').value.trim();
   const site     = document.getElementById('c-site').value.trim();
   const notes    = document.getElementById('c-notes').value.trim();
-  const ref      = quoteNum();
+  const ref      = overrideRef || quoteNum();
   const today    = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   const items    = Object.entries(cart);
 
@@ -822,30 +796,113 @@ function renderSubmitPreview() {
     </div>`;
 }
 
-function submitToHQ() {
+async function submitToHQ() {
   const items = Object.entries(cart);
   if (!items.length) { toast('Add products first'); qTab('items'); return; }
   const custName = document.getElementById('c-name').value.trim();
   if (!custName) { toast('Enter customer name first'); qTab('customer'); return; }
-  const msg = buildQuoteText(true);
+  const ref = quoteNum();
+  // Save to Supabase
+  const quoteData = {
+    ref,
+    custName,
+    contact: document.getElementById('c-contact').value.trim(),
+    phone:   document.getElementById('c-phone').value.trim(),
+    email:   document.getElementById('c-email').value.trim(),
+    site:    document.getElementById('c-site').value.trim(),
+    notes:   document.getElementById('c-notes').value.trim(),
+    items: items.map(([id, qty]) => {
+      const p = products.find(x => x.id == id);
+      return { id: p.id, name: p.name, hsn: p.hsn, unit: p.unit, qty, price: p.price, gst: p.gst, disc: getDisc(id) };
+    }),
+  };
+  toast('Saving quote...');
+  await sbSaveQuote(quoteData);
+  // Send WhatsApp
+  const msg = buildQuoteText(true, ref);
   const url = `https://wa.me/${HQ_PHONE}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
-  toast('Opening WhatsApp to HQ…');
+  toast('Quote saved & opening WhatsApp…');
+}
+
+// ── Supabase helpers ──
+const SUPA_URL = 'https://cuxfvbtvmosmgvptygjy.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1eGZ2YnR2bW9zbWd2cHR5Z2p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MDk5NzYsImV4cCI6MjA5NjA4NTk3Nn0.tuSqeeKONTldWAX1mDwXJAuIjs3o2amcNbfvns-OH4o';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+async function sbLoadProducts() {
+  const { data, error } = await supa.from('products').select('*').eq('is_active', true).order('category').order('name');
+  if (error) { console.error('Load products:', error); return []; }
+  return data.map(p => ({
+    id: p.id, name: p.name, cat: p.category || '', desc: p.description || '',
+    photo: p.photo_url || null, emoji: p.emoji || '📦',
+    price: parseFloat(p.base_price), gst: parseFloat(p.gst_pct),
+    hsn: p.hsn_code || '', unit: p.unit || '',
+  }));
+}
+
+async function sbSaveProduct(prod) {
+  const row = {
+    name: prod.name, category: prod.cat, description: prod.desc,
+    photo_url: prod.photo || null, emoji: prod.emoji || '📦',
+    base_price: prod.price, gst_pct: prod.gst,
+    hsn_code: prod.hsn, unit: prod.unit, is_active: true,
+    updated_at: new Date().toISOString(),
+  };
+  if (prod.id && !prod._new) {
+    const { error } = await supa.from('products').update(row).eq('id', prod.id);
+    if (error) throw error;
+    return prod.id;
+  } else {
+    const { data, error } = await supa.from('products').insert(row).select('id').single();
+    if (error) throw error;
+    return data.id;
+  }
+}
+
+async function sbDeleteProduct(id) {
+  const { error } = await supa.from('products').update({ is_active: false }).eq('id', id);
+  if (error) throw error;
+}
+
+async function sbSaveQuote(quoteData) {
+  try {
+    let customerId = null;
+    if (quoteData.custName) {
+      const { data: existing } = await supa.from('customers').select('id').ilike('company_name', quoteData.custName).maybeSingle();
+      if (existing) {
+        customerId = existing.id;
+        await supa.from('customers').update({ contact_person: quoteData.contact, phone: quoteData.phone, email: quoteData.email }).eq('id', customerId);
+      } else {
+        const { data: nc } = await supa.from('customers').insert({
+          company_name: quoteData.custName, contact_person: quoteData.contact,
+          phone: quoteData.phone, email: quoteData.email, billing_city: quoteData.site,
+        }).select('id').single();
+        if (nc) customerId = nc.id;
+      }
+    }
+    const { data: q, error: qErr } = await supa.from('quotes').insert({
+      quote_ref: quoteData.ref, agent_name: AGENT_NAME,
+      customer_id: customerId, status: 'pending',
+      notes: quoteData.notes, validity_days: 15,
+    }).select('id').single();
+    if (qErr) throw qErr;
+    const items = quoteData.items.map((item, i) => ({
+      quote_id: q.id, product_id: item.id, product_name: item.name,
+      hsn_code: item.hsn, unit: item.unit, qty: item.qty,
+      base_price: item.price, gst_pct: item.gst, disc_pct: item.disc, sort_order: i,
+    }));
+    await supa.from('quote_items').insert(items);
+    return q.id;
+  } catch(e) { console.error('Save quote:', e); return null; }
 }
 
 // ── Boot ──
 async function boot() {
-  await openDB();
-  products = await dbGetAll('products');
+  toast('Loading catalogue...');
+  products = await sbLoadProducts();
   if (products.length === 0) {
-    const samples = [
-      { id: 1001, name: 'Industrial Pump A200', cat: 'Pumps', desc: 'High-efficiency centrifugal pump. Flow: 200 LPM, Head: 30m.', photo: null, emoji: '💧', price: 18500, gst: 18, hsn: '8413', unit: 'piece' },
-      { id: 1002, name: 'Gate Valve 50mm',      cat: 'Valves', desc: 'Cast iron gate valve PN16. Water, oil & gas.', photo: null, emoji: '🔩', price: 2200, gst: 18, hsn: '8481', unit: 'piece' },
-      { id: 1003, name: 'Control Panel 32A',    cat: 'Electrical', desc: '3-phase motor control panel, IP54, overload relay + contactor.', photo: null, emoji: '🔌', price: 8750, gst: 18, hsn: '8537', unit: 'set' },
-      { id: 1004, name: 'SS Pipe 25mm × 6m',   cat: 'Pipes', desc: 'Grade 304 SS pipe, 25mm OD, 2mm wall, 6m length.', photo: null, emoji: '🛢️', price: 1420, gst: 18, hsn: '7306', unit: 'length' },
-    ];
-    for (const p of samples) await dbPut('products', p);
-    products = samples;
+    document.getElementById('cat-list').innerHTML = '<div class="empty"><i class="ti ti-wifi-off"></i><p>Could not load products.<br/>Check your connection and refresh.</p></div>';
   }
   renderCat();
   updateCartUI();
