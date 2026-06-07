@@ -388,7 +388,8 @@ let cart = {};      // id → qty
 let discounts = {}; // id → %
 let editId = null;
 let activeCat = 'All';
-let pendingPhoto = null; // base64 for current edit
+let pendingPhoto = null;     // preview URL (local blob)
+let pendingPhotoFile = null; // actual File object for upload
 
 // IndexedDB replaced by Supabase
 
@@ -559,6 +560,7 @@ function clearForm() {
   ['f-name','f-cat','f-desc','f-hsn','f-unit'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-price').value = '';
   document.getElementById('f-gst').value = '18';
+  pendingPhotoFile = null;
   clearPhotoUI();
   updatePreview();
 }
@@ -566,19 +568,17 @@ function clearPhotoUI() {
   const img = document.getElementById('photo-preview');
   img.src = ''; img.style.display = 'none';
   document.getElementById('photo-change-btn').style.display = 'none';
+  pendingPhoto = null; pendingPhotoFile = null;
 }
 function onPhotoSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    pendingPhoto = ev.target.result;
-    const img = document.getElementById('photo-preview');
-    img.src = pendingPhoto; img.style.display = 'block';
-    document.getElementById('photo-change-btn').style.display = 'block';
-    toast('Photo added');
-  };
-  reader.readAsDataURL(file);
+  pendingPhotoFile = file;
+  pendingPhoto = URL.createObjectURL(file); // local preview only
+  const img = document.getElementById('photo-preview');
+  img.src = pendingPhoto; img.style.display = 'block';
+  document.getElementById('photo-change-btn').style.display = 'block';
+  toast('Photo ready — will upload on save');
 }
 function updatePreview() {
   const base = parseFloat(document.getElementById('f-price').value) || 0;
@@ -593,18 +593,35 @@ async function saveProduct() {
   const name = document.getElementById('f-name').value.trim();
   if (!name) { toast('Please enter a product name'); return; }
   const price = parseFloat(document.getElementById('f-price').value) || 0;
-  const prod = {
-    id: editId || null, _new: !editId,
-    name, cat: document.getElementById('f-cat').value.trim(),
-    desc: document.getElementById('f-desc').value.trim(),
-    photo: pendingPhoto || null,
-    emoji: pendingPhoto ? null : '📦',
-    price, gst: parseInt(document.getElementById('f-gst').value),
-    hsn: document.getElementById('f-hsn').value.trim(),
-    unit: document.getElementById('f-unit').value.trim(),
-  };
   try {
     toast('Saving...');
+    // Upload photo to Supabase Storage if a new photo was selected
+    let photoUrl = null;
+    if (pendingPhotoFile) {
+      const ext  = pendingPhotoFile.name.split('.').pop() || 'jpg';
+      const path = 'products/' + Date.now() + '.' + ext;
+      const { data: upData, error: upErr } = await supa.storage
+        .from('product-photos')
+        .upload(path, pendingPhotoFile, { upsert: true, contentType: pendingPhotoFile.type });
+      if (upErr) throw upErr;
+      const { data: urlData } = supa.storage.from('product-photos').getPublicUrl(path);
+      photoUrl = urlData.publicUrl;
+      toast('Photo uploaded ✓');
+    } else if (editId) {
+      // Keep existing photo if not changed
+      const existing = products.find(p => p.id === editId);
+      photoUrl = existing ? existing.photo : null;
+    }
+    const prod = {
+      id: editId || null, _new: !editId,
+      name, cat: document.getElementById('f-cat').value.trim(),
+      desc: document.getElementById('f-desc').value.trim(),
+      photo: photoUrl,
+      emoji: photoUrl ? null : '📦',
+      price, gst: parseInt(document.getElementById('f-gst').value),
+      hsn: document.getElementById('f-hsn').value.trim(),
+      unit: document.getElementById('f-unit').value.trim(),
+    };
     const savedId = await sbSaveProduct(prod);
     prod.id = savedId; prod._new = false;
     if (editId) {
@@ -614,7 +631,7 @@ async function saveProduct() {
       products.unshift(prod);
     }
     toast(editId ? 'Product updated' : 'Product saved');
-    editId = null; pendingPhoto = null;
+    editId = null; pendingPhoto = null; pendingPhotoFile = null;
     nav('s-home');
   } catch(e) {
     toast('Error saving product — check connection');
