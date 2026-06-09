@@ -257,7 +257,8 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
     </div>
     <div class="form-group">
       <label class="form-label">Category</label>
-      <input class="form-control" type="text" id="f-cat" placeholder="e.g. Pumps, Valves, Pipes…"/>
+      <input class="form-control" type="text" id="f-cat" placeholder="Select or type new category…" list="cat-datalist" autocomplete="off"/>
+      <datalist id="cat-datalist"></datalist>
     </div>
     <div class="form-group">
       <label class="form-label">Description</label>
@@ -439,6 +440,13 @@ function setDisc(id, v) {
 function getCats() {
   return ['All', ...new Set(products.map(p => p.cat).filter(Boolean))];
 }
+function populateCatDatalist() {
+  const dl = document.getElementById('cat-datalist');
+  if (!dl) return;
+  const cats = [...new Set(products.map(p => p.cat).filter(Boolean))].sort();
+  dl.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+}
+
 function renderChips() {
   const wrap = document.getElementById('cat-chips');
   wrap.innerHTML = getCats().map(c =>
@@ -523,6 +531,7 @@ function openDetail(id) {
 function startAdd() {
   editId = null; pendingPhoto = null;
   clearForm();
+  populateCatDatalist();
   document.getElementById('add-title').textContent = 'Add product';
   document.getElementById('save-lbl').textContent = 'Save product';
   document.getElementById('delete-wrap').style.display = 'none';
@@ -553,6 +562,7 @@ function startEdit2(id) {
   } else {
     clearPhotoUI();
   }
+  populateCatDatalist();
   updatePreview();
   nav('s-add');
 }
