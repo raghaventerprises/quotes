@@ -1,7 +1,7 @@
 {
-  "name": "NARAD – Raghav Enterprises",
+  "name": "NARAD",
   "short_name": "NARAD",
-  "description": "Field quote builder for Raghav Enterprises agents",
+  "description": "Field quote builder",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
