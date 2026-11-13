@@ -1,6 +1,6 @@
 {
-  "name": "Raghav Enterprises – Quotes",
-  "short_name": "RE Quotes",
+  "name": "NARAD – Raghav Enterprises",
+  "short_name": "NARAD",
   "description": "Field quote builder for Raghav Enterprises agents",
   "start_url": "./index.html",
   "display": "standalone",
@@ -14,6 +14,9 @@
       "type": "image/svg+xml"
     }
   ],
-  "categories": ["business", "productivity"],
+  "categories": [
+    "business",
+    "productivity"
+  ],
   "lang": "en-IN"
 }
