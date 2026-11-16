@@ -1092,8 +1092,33 @@ function openMyQuote(id) {
       <div class="tb-row"><span>GST</span><span>${fmt(t.gst)}</span></div>
       <div class="tb-grand"><span class="lbl">Total incl. GST</span><span class="amt">${fmt(t.grand)}</span></div>
     </div>
+    <button class="btn-wa" style="margin-top:14px;" onclick="sendSavedEstimate(${q.id})">
+      <i class="ti ti-brand-whatsapp" style="font-size:20px;"></i> Send Estimate to Client
+    </button>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;">
+      Shows quantity, rate, GST and total only. Discounts are never shown to the client.
+    </p>
     <div style="height:20px;"></div>`;
   nav('s-qdetail');
+}
+function sendSavedEstimate(id) {
+  const q = myQuotes.find(x => x.id === id);
+  if (!q) return;
+  const c = q.customers || {};
+  let phone = String(c.phone || '').replace(/\D/g, '');
+  if (phone.length === 10) phone = '91' + phone;
+  if (phone.length < 11) { toast('No WhatsApp number saved for this customer'); return; }
+  const t = quoteTotals(q);
+  const items = (q.quote_items || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  // Client-facing: discounted rate only, never the discount itself
+  const lines = items.map(it => {
+    const qty  = parseFloat(it.qty || 0);
+    const rate = parseFloat(it.base_price || 0) * (1 - parseFloat(it.disc_pct || 0) / 100);
+    return `  • *${it.product_name}*${it.unit ? ' (' + it.unit + ')' : ''} x ${qty}\n    Rate: ${fmt(rate)}  |  Amount: ${fmt(rate * qty)}`;
+  });
+  const msg = `Dear ${c.company_name || 'Customer'},\n\nThank you for your enquiry. Please find our estimate below.\nRef: ${q.quote_ref} | Date: ${fmtDay(q.created_at)}\n\n*Items:*\n${lines.join('\n\n')}\n\n──────────────────\nAmount (excl. GST): ${fmt(t.taxable)}\nGST: ${fmt(t.gst)}\n*Estimated Total (incl. GST): ${fmt(t.grand)}*\n──────────────────\n\nThis is an estimate. Our formal quotation will follow.\n\n*${COMPANY}*\n${COMPANY_ADDR}`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  toast('Opening WhatsApp with the estimate…');
 }
 
 // ── Boot ──
