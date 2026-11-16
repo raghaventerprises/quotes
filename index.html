@@ -153,6 +153,25 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
 .badge-pending{background:var(--amber-lt);color:var(--amber);}
 .badge-sent{background:var(--green-lt);color:var(--green);}
 .badge-draft{background:var(--surface2);color:var(--muted);}
+.badge-approved{background:var(--navy-lt);color:var(--navy);}
+.badge-won{background:var(--green-lt);color:var(--green);}
+.badge-lost{background:var(--red-lt);color:var(--red);}
+/* ── My quotes ── */
+.mq-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:13px 14px;margin-bottom:9px;cursor:pointer;}
+.mq-row:active{background:var(--surface2);}
+.mq-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px;}
+.mq-ref{font-size:12px;font-weight:700;color:var(--navy);}
+.mq-cust{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mq-bot{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px;}
+.mq-meta{font-size:11px;color:var(--muted);}
+.mq-amt{font-size:15px;font-weight:700;color:var(--saffron);white-space:nowrap;}
+.qd-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:14px;margin-bottom:10px;}
+.qd-item{padding:10px 0;border-bottom:1px solid var(--border);}
+.qd-item:last-child{border-bottom:none;padding-bottom:0;}
+.qd-item:first-child{padding-top:0;}
+.qd-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.qd-line{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);}
+.qd-line b{color:var(--ink);font-weight:700;}
 
 /* ── Section head ── */
 .sec-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 8px;}
@@ -215,8 +234,9 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
   <div class="bottom-nav">
     <button class="bnav-btn active" id="bn-cat" onclick="nav('s-home')"><i class="ti ti-layout-grid"></i>Catalogue</button>
     <button class="bnav-btn" id="bn-quote" onclick="nav('s-quote')">
-      <div class="bnav-wrap"><i class="ti ti-file-invoice"></i><span class="bnav-dot" id="bnav-dot"></span></div>Quote
+      <div class="bnav-wrap"><i class="ti ti-file-invoice"></i><span class="bnav-dot" id="bnav-dot"></span></div>Draft
     </button>
+    <button class="bnav-btn" id="bn-mine" onclick="nav('s-myquotes')"><i class="ti ti-list-details"></i>My Quotes</button>
     <button class="bnav-btn" id="bn-add" onclick="startAdd()"><i class="ti ti-circle-plus"></i>Add Product</button>
   </div>
 </div>
@@ -308,6 +328,25 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
 </div>
 
 <!-- ══ SCREEN: QUOTE BUILDER ══ -->
+<!-- ══ SCREEN: MY QUOTES ══ -->
+<div class="screen" id="s-myquotes">
+  <div class="topbar">
+    <button class="back-btn" onclick="nav('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <span class="topbar-title">My Quotes</span>
+    <button class="icon-btn" aria-label="Refresh" onclick="loadMyQuotes()"><i class="ti ti-refresh"></i></button>
+  </div>
+  <div class="content" id="mq-list"></div>
+</div>
+
+<!-- ══ SCREEN: QUOTE DETAIL ══ -->
+<div class="screen" id="s-qdetail">
+  <div class="topbar">
+    <button class="back-btn" onclick="nav('s-myquotes', true)"><i class="ti ti-arrow-left"></i></button>
+    <span class="topbar-title" id="qd-title">Quote</span>
+  </div>
+  <div class="content" id="qd-body"></div>
+</div>
+
 <div class="screen" id="s-quote">
   <div class="topbar">
     <button class="back-btn" onclick="nav('s-home')"><i class="ti ti-arrow-left"></i></button>
@@ -411,9 +450,10 @@ function toast(msg) {
 }
 
 // ── Navigation ──
-function nav(id) {
+function nav(id, keepList) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if (id === 's-myquotes' && !keepList) loadMyQuotes();
   ['bn-cat','bn-quote','bn-add'].forEach(b => {
     const el = document.getElementById(b);
     if (el) el.classList.remove('active');
@@ -968,6 +1008,92 @@ async function sbSaveQuote(quoteData) {
     }
     return q.id;
   } catch(e) { console.error('Save quote:', e); return null; }
+}
+
+// ── My quotes: what this agent has submitted, read live from HQ's records ──
+let myQuotes = [];
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtDay(ts) {
+  return ts ? new Date(ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+}
+function quoteTotals(q) {
+  let list = 0, disc = 0, gst = 0;
+  (q.quote_items || []).forEach(it => {
+    const base    = parseFloat(it.base_price || 0) * parseFloat(it.qty || 0);
+    const d       = base * parseFloat(it.disc_pct || 0) / 100;
+    list += base; disc += d; gst += (base - d) * parseFloat(it.gst_pct || 0) / 100;
+  });
+  return { list, disc, taxable: list - disc, gst, grand: list - disc + gst };
+}
+async function loadMyQuotes() {
+  const box = document.getElementById('mq-list');
+  box.innerHTML = '<div class="empty"><i class="ti ti-loader"></i><p>Loading your quotes…</p></div>';
+  const { data, error } = await supa.from('quotes')
+    .select('*, customers(company_name,contact_person,phone), quote_items(*)')
+    .eq('agent_name', AGENT_NAME)
+    .order('created_at', { ascending: false })
+    .limit(200);
+  if (error) {
+    console.error('Load my quotes:', error);
+    box.innerHTML = '<div class="empty"><i class="ti ti-wifi-off"></i><p>Could not load your quotes.<br/>Check your connection.</p><button class="btn btn-primary" style="margin-top:14px;" onclick="loadMyQuotes()">Try again</button></div>';
+    return;
+  }
+  myQuotes = data || [];
+  if (!myQuotes.length) {
+    box.innerHTML = '<div class="empty"><i class="ti ti-file-off"></i><p>No quotes yet.<br/>Quotes you submit to HQ appear here.</p></div>';
+    return;
+  }
+  box.innerHTML = myQuotes.map(q => {
+    const n = (q.quote_items || []).length;
+    return `<div class="mq-row" onclick="openMyQuote(${q.id})">
+      <div class="mq-top"><span class="mq-ref">${esc(q.quote_ref)}</span><span class="badge badge-${esc(q.status)}">${esc(q.status)}</span></div>
+      <div class="mq-cust">${esc((q.customers && q.customers.company_name) || 'Unknown customer')}</div>
+      <div class="mq-bot"><span class="mq-meta">${fmtDay(q.created_at)} · ${n} item${n === 1 ? '' : 's'}</span><span class="mq-amt">${fmt(quoteTotals(q).grand)}</span></div>
+    </div>`;
+  }).join('');
+}
+function openMyQuote(id) {
+  const q = myQuotes.find(x => x.id === id);
+  if (!q) return;
+  const c = q.customers || {};
+  const t = quoteTotals(q);
+  const items = (q.quote_items || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  document.getElementById('qd-title').textContent = q.quote_ref || 'Quote';
+  document.getElementById('qd-body').innerHTML = `
+    <div class="qd-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span class="badge badge-${esc(q.status)}">${esc(q.status)}</span>
+        <span style="font-size:11px;color:var(--muted);">${fmtDay(q.created_at)}</span>
+      </div>
+      <div style="font-size:16px;font-weight:700;">${esc(c.company_name || 'Unknown customer')}</div>
+      ${c.contact_person ? `<div style="font-size:13px;color:var(--muted);">${esc(c.contact_person)}</div>` : ''}
+      ${c.phone ? `<div style="font-size:13px;color:var(--muted);">${esc(c.phone)}</div>` : ''}
+    </div>
+    ${q.notes ? `<div class="qd-box" style="font-size:13px;"><div class="sec-head" style="margin-top:0;">Your notes</div>${esc(q.notes)}</div>` : ''}
+    ${q.hq_notes ? `<div class="qd-box" style="font-size:13px;"><div class="sec-head" style="margin-top:0;">HQ notes</div>${esc(q.hq_notes)}</div>` : ''}
+    <div class="sec-head">Items</div>
+    <div class="qd-box">
+      ${items.length ? items.map(it => {
+        const qty  = parseFloat(it.qty || 0), base = parseFloat(it.base_price || 0), d = parseFloat(it.disc_pct || 0), g = parseFloat(it.gst_pct || 0);
+        const taxable = base * qty * (1 - d / 100);
+        return `<div class="qd-item">
+          <div class="qd-name">${esc(it.product_name)}</div>
+          <div class="qd-line"><span>${qty}${it.unit ? ' ' + esc(it.unit) : ''} × ${fmt(base)}</span><span>Discount <b>${d}%</b></span></div>
+          <div class="qd-line"><span>Excl. GST <b>${fmt(taxable)}</b></span><span>Incl. GST ${g}% <b>${fmt(taxable * (1 + g / 100))}</b></span></div>
+        </div>`;
+      }).join('') : '<div style="font-size:13px;color:var(--muted);">No items on this quote.</div>'}
+    </div>
+    <div class="total-bar">
+      <div class="tb-row"><span>Subtotal at list price</span><span>${fmt(t.list)}</span></div>
+      <div class="tb-row"><span>Discount</span><span>− ${fmt(t.disc)}</span></div>
+      <div class="tb-row"><span>Total excl. GST</span><span>${fmt(t.taxable)}</span></div>
+      <div class="tb-row"><span>GST</span><span>${fmt(t.gst)}</span></div>
+      <div class="tb-grand"><span class="lbl">Total incl. GST</span><span class="amt">${fmt(t.grand)}</span></div>
+    </div>
+    <div style="height:20px;"></div>`;
+  nav('s-qdetail');
 }
 
 // ── Boot ──
