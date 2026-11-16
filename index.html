@@ -369,6 +369,13 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
     <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;">
       Opens WhatsApp with a pre-filled message to HQ (+91 94959 35258).<br/>HQ will review, adjust pricing if needed, and send to client.
     </p>
+    <div class="sec-head" style="margin-top:18px;">Estimate for the client</div>
+    <button class="btn btn-ghost" style="width:100%;padding:13px;" onclick="sendEstimateToClient()">
+      <i class="ti ti-brand-whatsapp"></i> Send Estimate to Client
+    </button>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;">
+      Shows quantity, rate, GST and total only. Discounts are never shown to the client.
+    </p>
     <div style="height:20px;"></div>
   </div>
 </div>
@@ -765,6 +772,7 @@ function buildQuoteText(forHQ = true, overrideRef = null) {
   const items    = Object.entries(cart);
 
   let subBase = 0, subGst = 0, totalDisc = 0;
+  const clientLines = [];
   const lines = items.map(([id, qty]) => {
     const p = products.find(x => x.id == id); if (!p) return '';
     const disc         = getDisc(id);
@@ -780,6 +788,8 @@ function buildQuoteText(forHQ = true, overrideRef = null) {
     subBase   += unitBase * qty;
     totalDisc += lineDiscAmt;
     subGst    += lineGst;
+    // Client-facing line: discounted rate only, never the discount itself
+    clientLines.push(`  • *${p.name}*${p.unit ? ' (' + p.unit + ')' : ''} x ${qty}\n    Rate: ${fmt(unitTaxable)}  |  Amount: ${fmt(lineTaxable)}`);
     return `  • *${p.name}*${p.unit ? ' (' + p.unit + ')' : ''} x ${qty}\n    Unit net price (after disc & GST): *${fmt(unitNet)}*\n    Base: ${fmt(unitBase)}${disc > 0 ? ` - Disc ${disc}%: -${fmt(unitDiscAmt)} = Taxable: ${fmt(unitTaxable)}` : ''} + GST ${p.gst}%: ${fmt(unitGst)}\n    Line Total: *${fmt(lineNet)}*`;
   }).filter(Boolean);
 
@@ -788,7 +798,7 @@ function buildQuoteText(forHQ = true, overrideRef = null) {
   if (forHQ) {
     return `📋 *DRAFT QUOTE – PLEASE REVIEW*\nRef: ${ref} | Date: ${today}\nArea Manager: *${AGENT_NAME}*\n\n*Customer:* ${custName}${contact ? ' (' + contact + ')' : ''}${phone ? '\nPhone: ' + phone : ''}${site ? '\nSite: ' + site : ''}\n\n*Items:*\n${lines.join('\n\n')}\n\n──────────────────\nSubtotal (excl. GST): ${fmt(subBase)}\n${totalDisc > 0 ? `Discount (on base): −${fmt(totalDisc)}\nTaxable Value: ${fmt(subBase - totalDisc)}\n` : ''}Total GST: ${fmt(subGst)}\n*GRAND TOTAL: ${fmt(grand)}*\n──────────────────\n${notes ? 'Notes: ' + notes + '\n' : ''}\n⚠️ This is a DRAFT. Please review, adjust if needed, then send to client.\n\n_${COMPANY}_`;
   }
-  return `Dear ${custName},\n\nPlease find below our quotation:\nRef: ${ref} | Date: ${today}\n\n${lines.join('\n\n')}\n\n──────────────────\n*Grand Total (incl. GST): ${fmt(grand)}*\n──────────────────\n\nThis quote is valid for 15 days.\n\nThank you for your enquiry.\n\n*${COMPANY}*\n${COMPANY_ADDR}`;
+  return `Dear ${custName},\n\nThank you for your enquiry. Please find our estimate below.\nDate: ${today}\n\n*Items:*\n${clientLines.join('\n\n')}\n\n──────────────────\nAmount (excl. GST): ${fmt(subBase - totalDisc)}\nGST: ${fmt(subGst)}\n*Estimated Total (incl. GST): ${fmt(grand)}*\n──────────────────\n\nThis is an estimate. Our formal quotation will follow.\n\n*${COMPANY}*\n${COMPANY_ADDR}`;
 }
 
 function renderSubmitPreview() {
@@ -821,6 +831,16 @@ function renderSubmitPreview() {
         <span style="font-size:16px;font-weight:700;color:var(--saffron);">${fmt(grand)}</span>
       </div>
     </div>`;
+}
+
+function sendEstimateToClient() {
+  if (!Object.keys(cart).length) { toast('Add products first'); qTab('items'); return; }
+  if (!document.getElementById('c-name').value.trim()) { toast('Enter customer name first'); qTab('customer'); return; }
+  let phone = document.getElementById('c-phone').value.replace(/\D/g, '');
+  if (phone.length === 10) phone = '91' + phone;
+  if (phone.length < 11) { toast('Enter the client WhatsApp number first'); qTab('customer'); return; }
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(buildQuoteText(false))}`, '_blank');
+  toast('Opening WhatsApp with the estimate…');
 }
 
 async function submitToHQ() {
