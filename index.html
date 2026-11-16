@@ -204,24 +204,101 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
 /* ── Detail hero ── */
 .detail-hero{width:100%;height:200px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:72px;flex-shrink:0;overflow:hidden;}
 .detail-hero img{width:100%;height:100%;object-fit:cover;}
+
+/* ── Home: new-quote button ── */
+#s-home{position:relative;}
+.fab{position:absolute;right:18px;bottom:calc(76px + var(--safe-bot));width:60px;height:60px;border-radius:50%;background:var(--saffron);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 18px rgba(232,82,10,.38);z-index:5;}
+.fab:active{transform:scale(.94);background:var(--saffron-dk);}
+/* Text fallbacks shown only if the icon font has not loaded */
+.fab .fab-plus,.back-btn .back-txt{display:none;}
+.no-icons .fab .fab-plus{display:inline;font-size:34px;font-weight:500;line-height:1;margin-top:-4px;}
+.no-icons .back-btn .back-txt{display:inline;font-size:30px;line-height:.8;padding:0 6px 4px 0;}
+.back-btn{min-width:28px;min-height:32px;}
+.top-link{background:none;border:none;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;cursor:pointer;padding:6px 2px;}
+.watermark{text-align:center;padding:64px 28px 0;color:var(--hint);}
+.watermark .wm-ico{font-size:76px;line-height:1;opacity:.28;margin-bottom:14px;}
+.watermark h3{font-size:17px;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.watermark p{font-size:13px;line-height:1.6;}
+.draft-card{background:var(--saffron-lt);border:1.5px dashed var(--saffron);border-radius:var(--rad);padding:13px 14px;margin-bottom:12px;}
+.draft-card .dc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.draft-card .dc-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--saffron-dk);}
+.draft-card .dc-cust{font-size:15px;font-weight:700;}
+.draft-card .dc-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.draft-card .dc-actions{display:flex;gap:8px;margin-top:10px;}
+.list-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:4px 2px 9px;}
+
+/* ── Step indicator ── */
+.steps{display:flex;align-items:center;gap:6px;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;flex-shrink:0;}
+.step{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:12px;font-weight:700;color:var(--hint);padding:2px 0;}
+.step b{width:22px;height:22px;border-radius:50%;background:var(--surface2);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:11px;}
+.step.active{color:var(--ink);}
+.step.active b{background:var(--saffron);color:#fff;}
+.step.done{color:var(--navy);}
+.step.done b{background:var(--navy);color:#fff;}
+.step-line{flex:1;height:2px;background:var(--border);border-radius:2px;}
+
+/* ── Customer suggestions ── */
+#cust-suggest{position:absolute;left:0;right:0;top:100%;z-index:6;background:var(--surface);border:1px solid var(--border-md);border-radius:var(--rad-sm);margin-top:4px;box-shadow:0 8px 22px rgba(15,45,94,.12);overflow:hidden;display:none;}
+.cs-row{padding:10px 13px;border-bottom:1px solid var(--border);cursor:pointer;}
+.cs-row:last-child{border-bottom:none;}
+.cs-row:active{background:var(--surface2);}
+.cs-name{font-size:14px;font-weight:700;}
+.cs-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+
+/* ── Product picker ── */
+.pk-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-sm);padding:10px 11px;margin-bottom:8px;}
+.pk-row.in{border-color:var(--saffron);background:#FFFBF8;}
+.pk-body{flex:1;min-width:0;}
+.pk-name{font-size:13px;font-weight:700;line-height:1.3;}
+.pk-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.pk-price{font-size:13px;font-weight:700;color:var(--saffron);margin-top:2px;}
+.pick-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border-top:1px solid var(--border);padding:10px 14px calc(10px + var(--safe-bot));flex-shrink:0;}
+.pick-count{font-size:12px;font-weight:700;}
+.pick-total{font-size:12px;color:var(--muted);}
+.more-note{text-align:center;font-size:12px;color:var(--muted);padding:6px 0 14px;}
+
+/* ── Typed quantity ── */
+.stepper input{width:46px;border:none;background:transparent;text-align:center;font-family:var(--font);font-size:16px;font-weight:700;color:var(--ink);padding:0;outline:none;-moz-appearance:textfield;}
+.stepper input:focus{background:var(--surface);}
+.stepper button{width:36px;height:36px;}
+.hint{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
+.disc-input{font-size:16px;}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- ══ SCREEN: CATALOGUE ══ -->
+<!-- ══ HOME: MY QUOTES ══ -->
 <div class="screen active" id="s-home">
   <div class="topbar">
     <div class="topbar-logo">
       <span>NARAD</span>
       <span>Field Quotes</span>
     </div>
-    <button class="icon-btn" aria-label="View quote" onclick="nav('s-quote')"><i class="ti ti-file-invoice"></i></button>
-    <span class="cart-pill" id="cart-pill">0</span>
+    <button class="icon-btn" aria-label="Refresh" onclick="loadMyQuotes()"><i class="ti ti-refresh"></i></button>
   </div>
   <div class="agent-banner">
     <div class="agent-avatar">JR</div>
     <span class="agent-name">Jairam · Area Manager</span>
+  </div>
+  <div class="content" style="padding-bottom:calc(96px + var(--safe-bot));">
+    <div id="draft-card"></div>
+    <div id="mq-list"></div>
+  </div>
+  <button class="fab" aria-label="New quote" onclick="startQuote()"><i class="ti ti-plus"></i><span class="fab-plus">+</span></button>
+  <div class="bottom-nav">
+    <button class="bnav-btn active" onclick="nav('s-home')"><i class="ti ti-file-invoice"></i>Quotes</button>
+    <button class="bnav-btn" onclick="nav('s-products')"><i class="ti ti-layout-grid"></i>Products</button>
+  </div>
+</div>
+
+<!-- ══ PRODUCTS: PRICE CHECK ══ -->
+<div class="screen" id="s-products">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <span>Products</span>
+      <span>Price check</span>
+    </div>
   </div>
   <div class="search-wrap">
     <div class="search-inner">
@@ -232,21 +309,16 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
   <div class="chip-row" id="cat-chips"></div>
   <div class="content" id="cat-list"></div>
   <div class="bottom-nav">
-    <button class="bnav-btn active" id="bn-cat" onclick="nav('s-home')"><i class="ti ti-layout-grid"></i>Catalogue</button>
-    <button class="bnav-btn" id="bn-quote" onclick="nav('s-quote')">
-      <div class="bnav-wrap"><i class="ti ti-file-invoice"></i><span class="bnav-dot" id="bnav-dot"></span></div>Draft
-    </button>
-    <button class="bnav-btn" id="bn-mine" onclick="nav('s-myquotes')"><i class="ti ti-list-details"></i>My Quotes</button>
-    <button class="bnav-btn" id="bn-add" onclick="startAdd()"><i class="ti ti-circle-plus"></i>Add Product</button>
+    <button class="bnav-btn" onclick="nav('s-home')"><i class="ti ti-file-invoice"></i>Quotes</button>
+    <button class="bnav-btn active" onclick="nav('s-products')"><i class="ti ti-layout-grid"></i>Products</button>
   </div>
 </div>
 
-<!-- ══ SCREEN: PRODUCT DETAIL ══ -->
+<!-- ══ PRODUCT DETAIL ══ -->
 <div class="screen" id="s-detail">
   <div class="topbar">
-    <button class="back-btn" onclick="nav('s-home')"><i class="ti ti-arrow-left"></i></button>
+    <button class="back-btn" aria-label="Back" onclick="nav('s-products')"><i class="ti ti-arrow-left"></i><span class="back-txt">‹</span></button>
     <span class="topbar-title" id="detail-title"></span>
-    <button class="icon-btn" aria-label="Edit" onclick="startEdit()"><i class="ti ti-edit"></i></button>
   </div>
   <div class="content" style="padding:0 0 calc(16px + var(--safe-bot));">
     <div class="detail-hero" id="detail-hero"></div>
@@ -254,166 +326,88 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
   </div>
 </div>
 
-<!-- ══ SCREEN: ADD / EDIT PRODUCT ══ -->
-<div class="screen" id="s-add">
-  <div class="topbar">
-    <button class="back-btn" onclick="nav('s-home')"><i class="ti ti-arrow-left"></i></button>
-    <span class="topbar-title" id="add-title">Add product</span>
-  </div>
-  <div class="content">
-    <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" onchange="onPhotoSelect(event)"/>
-    <div class="form-group">
-      <label class="form-label">Product photo</label>
-      <div class="photo-upload" id="photo-area" onclick="document.getElementById('photo-input').click()">
-        <i class="ti ti-camera-plus" aria-hidden="true"></i>
-        <span class="upload-hint">Tap to take a photo<br/>or choose from gallery</span>
-        <img id="photo-preview" src="" alt="" style="display:none"/>
-        <button class="photo-change-btn" id="photo-change-btn" style="display:none" onclick="event.stopPropagation();document.getElementById('photo-input').click()">Change</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Product name *</label>
-      <input class="form-control" type="text" id="f-name" placeholder="e.g. Industrial Pump A200"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Category</label>
-      <input class="form-control" type="text" id="f-cat" placeholder="Select or type new category…" list="cat-datalist" autocomplete="off"/>
-      <datalist id="cat-datalist"></datalist>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea class="form-control" id="f-desc" placeholder="Specifications, grade, features…"></textarea>
-    </div>
-    <div class="input-row">
-      <div class="form-group">
-        <label class="form-label">Base price (₹) *</label>
-        <input class="form-control" type="number" id="f-price" placeholder="0.00" min="0" step="0.01" oninput="updatePreview()"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">GST rate</label>
-        <select class="form-control" id="f-gst" onchange="updatePreview()">
-          <option value="0">0% – Exempt</option>
-          <option value="5">5%</option>
-          <option value="12">12%</option>
-          <option value="18" selected>18%</option>
-          <option value="28">28%</option>
-        </select>
-      </div>
-    </div>
-    <div class="price-box" id="price-preview-box">
-      <div class="pb-row"><span>Base price</span><span id="pp-base">₹0.00</span></div>
-      <div class="pb-row"><span id="pp-gst-lbl">GST (18%)</span><span id="pp-gst">₹0.00</span></div>
-      <div class="pb-row pb-total"><span>Total incl. GST</span><span id="pp-total">₹0.00</span></div>
-    </div>
-    <div class="input-row">
-      <div class="form-group">
-        <label class="form-label">HSN / SAC code</label>
-        <input class="form-control" type="text" id="f-hsn" placeholder="e.g. 8413"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Unit</label>
-        <input class="form-control" type="text" id="f-unit" placeholder="piece, kg, litre…"/>
-      </div>
-    </div>
-    <button class="btn btn-primary btn-block" onclick="saveProduct()">
-      <i class="ti ti-check"></i><span id="save-lbl">Save product</span>
-    </button>
-    <div id="delete-wrap" style="display:none;margin-top:10px;">
-      <button class="btn btn-block" style="border:1px solid #FECACA;color:#DC2626;" onclick="deleteProduct()">
-        <i class="ti ti-trash"></i> Delete product
-      </button>
-    </div>
-    <div style="height:24px;"></div>
-  </div>
-</div>
-
-<!-- ══ SCREEN: QUOTE BUILDER ══ -->
-<!-- ══ SCREEN: MY QUOTES ══ -->
-<div class="screen" id="s-myquotes">
-  <div class="topbar">
-    <button class="back-btn" onclick="nav('s-home')"><i class="ti ti-arrow-left"></i></button>
-    <span class="topbar-title">My Quotes</span>
-    <button class="icon-btn" aria-label="Refresh" onclick="loadMyQuotes()"><i class="ti ti-refresh"></i></button>
-  </div>
-  <div class="content" id="mq-list"></div>
-</div>
-
-<!-- ══ SCREEN: QUOTE DETAIL ══ -->
+<!-- ══ SAVED QUOTE DETAIL ══ -->
 <div class="screen" id="s-qdetail">
   <div class="topbar">
-    <button class="back-btn" onclick="nav('s-myquotes', true)"><i class="ti ti-arrow-left"></i></button>
+    <button class="back-btn" aria-label="Back" onclick="nav('s-home', true)"><i class="ti ti-arrow-left"></i><span class="back-txt">‹</span></button>
     <span class="topbar-title" id="qd-title">Quote</span>
   </div>
   <div class="content" id="qd-body"></div>
 </div>
 
+<!-- ══ NEW QUOTE: 3 STEPS ══ -->
 <div class="screen" id="s-quote">
   <div class="topbar">
-    <button class="back-btn" onclick="nav('s-home')"><i class="ti ti-arrow-left"></i></button>
-    <span class="topbar-title">Draft Quote</span>
+    <button class="back-btn" aria-label="Back" onclick="stepBack()"><i class="ti ti-arrow-left"></i><span class="back-txt">‹</span></button>
+    <span class="topbar-title">New Quote</span>
+    <button class="top-link" onclick="discardDraft()">Discard</button>
   </div>
-  <div class="tab-bar">
-    <button class="tab-btn active" id="qt-items" onclick="qTab('items')">Items</button>
-    <button class="tab-btn" id="qt-customer" onclick="qTab('customer')">Customer</button>
-    <button class="tab-btn" id="qt-submit" onclick="qTab('submit')">Submit to HQ</button>
+  <div class="steps">
+    <button class="step" id="st-1" onclick="goStep(1)"><b>1</b>Customer</button>
+    <span class="step-line"></span>
+    <button class="step" id="st-2" onclick="goStep(2)"><b>2</b>Products</button>
+    <span class="step-line"></span>
+    <button class="step" id="st-3" onclick="goStep(3)"><b>3</b>Review</button>
   </div>
-  <div class="content" id="qp-items">
-    <div id="quote-list"></div>
-    <button class="btn btn-ghost btn-block" style="margin-top:4px;" onclick="nav('s-home')">
-      <i class="ti ti-plus"></i> Add more products
-    </button>
-  </div>
-  <div class="content" id="qp-customer" style="display:none;">
-    <div class="form-group">
+
+  <!-- Step 1 -->
+  <div class="content" id="qp-1">
+    <div class="form-group" style="position:relative;">
       <label class="form-label">Customer / company name *</label>
-      <input class="form-control" type="text" id="c-name" placeholder="e.g. Kerala Constructions Pvt. Ltd."/>
+      <input class="form-control" type="text" id="c-name" placeholder="Start typing to search customers…" autocomplete="off" oninput="onCustInput()"/>
+      <div id="cust-suggest"></div>
     </div>
     <div class="form-group">
       <label class="form-label">Contact person</label>
-      <input class="form-control" type="text" id="c-contact" placeholder="e.g. Mr. Suresh Kumar"/>
+      <input class="form-control" type="text" id="c-contact" placeholder="e.g. Mr. Suresh Kumar" oninput="saveCust()"/>
     </div>
     <div class="form-group">
       <label class="form-label">Client WhatsApp / phone</label>
-      <input class="form-control" type="tel" id="c-phone" placeholder="+91 98765 43210"/>
+      <input class="form-control" type="tel" id="c-phone" placeholder="+91 98765 43210" oninput="saveCust()"/>
     </div>
     <div class="form-group">
       <label class="form-label">Client email (optional)</label>
-      <input class="form-control" type="email" id="c-email" placeholder="client@company.com"/>
+      <input class="form-control" type="email" id="c-email" placeholder="client@company.com" oninput="saveCust()"/>
     </div>
     <div class="form-group">
       <label class="form-label">Site / project location</label>
-      <input class="form-control" type="text" id="c-site" placeholder="e.g. Kakkanad, Ernakulam"/>
+      <input class="form-control" type="text" id="c-site" placeholder="e.g. Kakkanad, Ernakulam" oninput="saveCust()"/>
     </div>
     <div class="form-group">
       <label class="form-label">Notes for HQ</label>
-      <textarea class="form-control" id="c-notes" placeholder="Client is interested in bulk. Needs delivery by end of month…"></textarea>
+      <textarea class="form-control" id="c-notes" placeholder="Client is interested in bulk. Needs delivery by end of month…" oninput="saveCust()"></textarea>
     </div>
-    <button class="btn btn-primary btn-block" onclick="qTab('submit')">
-      Preview &amp; Submit <i class="ti ti-arrow-right"></i>
-    </button>
+    <button class="btn btn-primary btn-block" onclick="goStep(2)">Next: add products <i class="ti ti-arrow-right"></i></button>
     <div style="height:20px;"></div>
   </div>
-  <div class="content" id="qp-submit" style="display:none;">
-    <div class="submit-card">
-      <div class="submit-icon">📋</div>
-      <h2>Ready to submit?</h2>
-      <p>This draft goes to HQ for review in SUDARSHAN.<br/>HQ will adjust if needed and send the final quote directly to the client.</p>
+
+  <!-- Step 2 -->
+  <div id="qp-2" style="display:none;flex:1;min-height:0;flex-direction:column;">
+    <div class="search-wrap">
+      <div class="search-inner">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input class="form-control" type="search" id="pick-search" placeholder="Search products to add…" oninput="renderPick()"/>
+      </div>
     </div>
-    <div id="submit-preview"></div>
-    <div class="sec-head">Submit to HQ</div>
-    <button class="btn btn-primary btn-block" id="submit-hq-btn" onclick="submitToHQ()">
-      <i class="ti ti-send"></i> Submit Quote to HQ
-    </button>
-    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;">
-      Goes straight to SUDARSHAN. HQ will review, adjust pricing if needed, and send the quotation to the client.
-    </p>
-    <div class="sec-head" style="margin-top:18px;">Estimate for the client</div>
-    <button class="btn btn-ghost" style="width:100%;padding:13px;" onclick="sendEstimateToClient()">
-      <i class="ti ti-brand-whatsapp"></i> Send Estimate to Client
-    </button>
-    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;">
-      Shows quantity, rate, GST and total only. Discounts are never shown to the client.
-    </p>
+    <div class="chip-row" id="pick-chips"></div>
+    <div class="content" id="pick-list"></div>
+    <div class="pick-bar">
+      <div><div class="pick-count" id="pick-count">No items yet</div><div class="pick-total" id="pick-total"></div></div>
+      <button class="btn btn-primary" onclick="goStep(3)">Review <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="content" id="qp-3" style="display:none;">
+    <div id="review-cust"></div>
+    <div class="sec-head">Items</div>
+    <div id="quote-list"></div>
+    <button class="btn btn-ghost btn-block" style="margin-top:4px;" onclick="goStep(2)"><i class="ti ti-plus"></i> Add more products</button>
+    <div id="review-totals"></div>
+    <button class="btn btn-primary btn-block" id="submit-hq-btn" onclick="submitToHQ()"><i class="ti ti-send"></i> Submit Quote to HQ</button>
+    <p class="hint">Goes straight to SUDARSHAN. HQ will review, adjust pricing if needed, and send the quotation to the client.</p>
+    <button class="btn btn-ghost btn-block" style="margin-top:14px;" onclick="sendEstimateToClient()"><i class="ti ti-brand-whatsapp"></i> Send Estimate to Client</button>
+    <p class="hint">Shows quantity, rate, GST and total only. Discounts are never shown to the client.</p>
     <div style="height:20px;"></div>
   </div>
 </div>
@@ -423,521 +417,472 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
 
 <script>
 // ── Config ──
-const HQ_PHONE = '919495935258';
 const AGENT_NAME = 'Jairam';
 const COMPANY = 'Raghav Enterprises';
 const COMPANY_ADDR = 'TD Building, TD Road, Ernakulam – 682035';
+const MAX_ROWS = 60;                 // rows drawn at once; search narrows the rest
+const DRAFT_KEY = 'narad.draft.v1';
+
+// ── Supabase ──
+const SUPA_URL = 'https://cuxfvbtvmosmgvptygjy.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1eGZ2YnR2bW9zbWd2cHR5Z2p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MDk5NzYsImV4cCI6MjA5NjA4NTk3Nn0.tuSqeeKONTldWAX1mDwXJAuIjs3o2amcNbfvns-OH4o';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // ── State ──
 let products = [];
-let cart = {};      // id → qty
-let discounts = {}; // id → %
-let editId = null;
-let activeCat = 'All';
-let pendingPhoto = null;     // preview URL (local blob)
-let pendingPhotoFile = null; // actual File object for upload
-
-// IndexedDB replaced by Supabase
+let customers = [];
+let myQuotes = [];
+let activeCat = 'All', pickCat = 'All';
+let step = 1;
+// The quote being built. Kept on the phone so a call or a closed app does not lose it.
+let draft = emptyDraft();
+function emptyDraft() {
+  return { cust: { name: '', contact: '', phone: '', email: '', site: '', notes: '' }, cart: {}, discounts: {} };
+}
+function saveDraft() {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch (e) {}
+}
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (d && d.cust && d.cart) draft = Object.assign(emptyDraft(), d);
+  } catch (e) {}
+}
+function draftHasContent() {
+  return Object.keys(draft.cart).length > 0 || Object.values(draft.cust).some(v => String(v || '').trim());
+}
 
 // ── Helpers ──
 function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 function totalInc(p) { return p.price * (1 + p.gst / 100); }
 function quoteNum() { return 'QF-' + Date.now().toString().slice(-6); }
+function fmtDay(ts) {
+  return ts ? new Date(ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+}
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400);
+}
+function prod(id) { return products.find(x => x.id == id); }
+function getDisc(id) { return draft.discounts[id] || 0; }
+function draftTotals() {
+  let list = 0, disc = 0, gst = 0, units = 0;
+  Object.entries(draft.cart).forEach(([id, qty]) => {
+    const p = prod(id); if (!p) return;
+    const base = p.price * qty, d = base * getDisc(id) / 100;
+    list += base; disc += d; gst += (base - d) * p.gst / 100; units += qty;
+  });
+  return { list, disc, taxable: list - disc, gst, grand: list - disc + gst, lines: Object.keys(draft.cart).length, units };
 }
 
 // ── Navigation ──
 function nav(id, keepList) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if (id === 's-myquotes' && !keepList) loadMyQuotes();
-  ['bn-cat','bn-quote','bn-add'].forEach(b => {
-    const el = document.getElementById(b);
-    if (el) el.classList.remove('active');
+  if (id === 's-home') { renderDraftCard(); if (!keepList) loadMyQuotes(); }
+  if (id === 's-products') renderCat();
+}
+
+// ═════════ HOME ═════════
+function renderDraftCard() {
+  const box = document.getElementById('draft-card');
+  if (!draftHasContent()) { box.innerHTML = ''; return; }
+  const t = draftTotals();
+  box.innerHTML = `<div class="draft-card">
+    <div class="dc-top"><span class="dc-tag">Unfinished quote</span><span class="dc-tag">${t.lines ? fmt(t.grand) : ''}</span></div>
+    <div class="dc-cust">${esc(draft.cust.name || 'No customer yet')}</div>
+    <div class="dc-meta">${t.lines ? t.lines + ' product' + (t.lines === 1 ? '' : 's') + ' added' : 'No products added yet'} · not sent to HQ</div>
+    <div class="dc-actions">
+      <button class="btn btn-primary btn-sm" style="flex:1;" onclick="startQuote()">Continue</button>
+      <button class="btn btn-ghost btn-sm" onclick="discardDraft()">Discard</button>
+    </div>
+  </div>`;
+}
+function quoteTotals(q) {
+  let list = 0, disc = 0, gst = 0;
+  (q.quote_items || []).forEach(it => {
+    const base = parseFloat(it.base_price || 0) * parseFloat(it.qty || 0);
+    const d    = base * parseFloat(it.disc_pct || 0) / 100;
+    list += base; disc += d; gst += (base - d) * parseFloat(it.gst_pct || 0) / 100;
   });
-  if (id === 's-home') { document.getElementById('bn-cat').classList.add('active'); renderCat(); }
-  if (id === 's-quote') { document.getElementById('bn-quote').classList.add('active'); renderQuote(); }
-  updateCartUI();
+  return { list, disc, taxable: list - disc, gst, grand: list - disc + gst };
 }
-
-// ── Cart UI ──
-function updateCartUI() {
-  const total = Object.values(cart).reduce((a, v) => a + v, 0);
-  document.getElementById('cart-pill').textContent = total;
-  const dot = document.getElementById('bnav-dot');
-  dot.style.display = total > 0 ? 'block' : 'none';
-}
-function adjustCart(id, delta) {
-  cart[id] = (cart[id] || 0) + delta;
-  if (cart[id] <= 0) { delete cart[id]; delete discounts[id]; }
-  updateCartUI();
-  renderCat();
-}
-function getDisc(id) { return discounts[id] || 0; }
-function setDisc(id, v) {
-  discounts[id] = Math.max(0, Math.min(100, parseFloat(v) || 0));
-  renderQuote();
-}
-
-// ── Categories ──
-function getCats() {
-  return ['All', ...new Set(products.map(p => p.cat).filter(Boolean))];
-}
-function populateCatDatalist() {
-  const dl = document.getElementById('cat-datalist');
-  if (!dl) return;
-  const cats = [...new Set(products.map(p => p.cat).filter(Boolean))].sort();
-  dl.innerHTML = cats.map(c => `<option value="${c}">`).join('');
-}
-
-function renderChips() {
-  const wrap = document.getElementById('cat-chips');
-  wrap.innerHTML = getCats().map(c =>
-    `<span class="chip${activeCat === c ? ' active' : ''}" onclick="activeCat='${c}';renderChips();renderCat();">${c}</span>`
-  ).join('');
-}
-
-// ── Catalogue ──
-function renderCat() {
-  renderChips();
-  const q = (document.getElementById('search-inp').value || '').toLowerCase();
-  const list = document.getElementById('cat-list');
-  const filtered = products.filter(p => {
-    const mq = !q || p.name.toLowerCase().includes(q) || (p.cat || '').toLowerCase().includes(q) || (p.desc || '').toLowerCase().includes(q);
-    const mc = activeCat === 'All' || p.cat === activeCat;
-    return mq && mc;
-  });
-  if (!filtered.length) {
-    list.innerHTML = '<div class="empty"><i class="ti ti-package-off"></i><p>No products found.<br/>Tap Add Product to create one.</p></div>';
+async function loadMyQuotes() {
+  const box = document.getElementById('mq-list');
+  if (!myQuotes.length) box.innerHTML = '<div class="empty"><i class="ti ti-loader"></i><p>Loading your quotes…</p></div>';
+  const { data, error } = await supa.from('quotes')
+    .select('*, customers(company_name,contact_person,phone), quote_items(*)')
+    .eq('agent_name', AGENT_NAME)
+    .order('created_at', { ascending: false })
+    .limit(200);
+  if (error) {
+    console.error('Load my quotes:', error);
+    box.innerHTML = '<div class="empty"><i class="ti ti-wifi-off"></i><p>Could not load your quotes.<br/>Check your connection.</p><button class="btn btn-primary" style="margin-top:14px;" onclick="loadMyQuotes()">Try again</button></div>';
     return;
   }
-  list.innerHTML = filtered.map(p => {
-    const total = totalInc(p);
-    const inCart = cart[p.id] || 0;
-    const thumb = p.photo
-      ? `<div class="prod-thumb"><img src="${p.photo}" alt="${p.name}" loading="lazy"/></div>`
-      : `<div class="prod-thumb">${p.emoji || '📦'}</div>`;
-    return `<div class="prod-card">
-      ${thumb}
-      <div class="prod-info">
-        ${p.cat ? `<span class="prod-cat">${p.cat}</span>` : ''}
-        <div class="prod-name">${p.name}</div>
-        <div class="prod-price">${fmt(total)}</div>
-        <div class="prod-gst">incl. ${p.gst}% GST · base ${fmt(p.price)}${p.unit ? ' / ' + p.unit : ''}</div>
-        <div class="prod-actions">
-          <button class="btn-icon" aria-label="View" onclick="openDetail(${p.id})"><i class="ti ti-eye"></i></button>
-          ${inCart > 0
-            ? `<div class="stepper">
-                <button onclick="adjustCart(${p.id},-1)">−</button>
-                <span>${inCart}</span>
-                <button onclick="adjustCart(${p.id},1)">+</button>
-               </div>`
-            : `<button class="btn btn-primary btn-sm" onclick="adjustCart(${p.id},1)"><i class="ti ti-plus"></i> Add</button>`
-          }
-        </div>
-      </div>
+  myQuotes = data || [];
+  renderMyQuotes();
+}
+function renderMyQuotes() {
+  const box = document.getElementById('mq-list');
+  if (!myQuotes.length) {
+    box.innerHTML = draftHasContent() ? '' : `<div class="watermark">
+      <div class="wm-ico">📋</div>
+      <h3>No quotes yet</h3>
+      <p>Tap the orange <b>+</b> button to build your first quote.<br/>Every quote you send to HQ will be listed here.</p>
+    </div>`;
+    return;
+  }
+  box.innerHTML = `<div class="list-head">Your quotes · ${myQuotes.length}</div>` + myQuotes.map(q => {
+    const n = (q.quote_items || []).length;
+    return `<div class="mq-row" onclick="openMyQuote(${q.id})">
+      <div class="mq-top"><span class="mq-ref">${esc(q.quote_ref)}</span><span class="badge badge-${esc(q.status)}">${esc(q.status)}</span></div>
+      <div class="mq-cust">${esc((q.customers && q.customers.company_name) || 'Unknown customer')}</div>
+      <div class="mq-bot"><span class="mq-meta">${fmtDay(q.created_at)} · ${n} item${n === 1 ? '' : 's'}</span><span class="mq-amt">${fmt(quoteTotals(q).grand)}</span></div>
     </div>`;
   }).join('');
 }
-
-// ── Product detail ──
-function openDetail(id) {
-  editId = null;
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-  document.getElementById('detail-title').textContent = p.name;
-  const hero = document.getElementById('detail-hero');
-  hero.innerHTML = p.photo ? `<img src="${p.photo}" alt="${p.name}"/>` : (p.emoji || '📦');
-  const base = p.price, gstAmt = base * p.gst / 100, total = base + gstAmt;
-  const inCart = cart[p.id] || 0;
-  document.getElementById('detail-body').innerHTML = `
-    ${p.cat ? `<span class="prod-cat">${p.cat}</span>` : ''}
-    <h2 style="font-size:20px;font-weight:700;margin:8px 0 6px;">${p.name}</h2>
-    ${p.desc ? `<p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px;">${p.desc}</p>` : ''}
-    <div class="price-box">
-      <div class="pb-row"><span>Base price</span><span>${fmt(base)}</span></div>
-      <div class="pb-row"><span>GST @ ${p.gst}%</span><span>${fmt(gstAmt)}</span></div>
-      <div class="pb-row pb-total"><span>Total incl. GST</span><span>${fmt(total)}</span></div>
-      ${p.hsn ? `<div style="font-size:11px;color:var(--muted);margin-top:6px;">HSN/SAC: ${p.hsn}</div>` : ''}
-      ${p.unit ? `<div style="font-size:11px;color:var(--muted);">Unit: ${p.unit}</div>` : ''}
+function openMyQuote(id) {
+  const q = myQuotes.find(x => x.id === id);
+  if (!q) return;
+  const c = q.customers || {};
+  const t = quoteTotals(q);
+  const items = (q.quote_items || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  document.getElementById('qd-title').textContent = q.quote_ref || 'Quote';
+  document.getElementById('qd-body').innerHTML = `
+    <div class="qd-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span class="badge badge-${esc(q.status)}">${esc(q.status)}</span>
+        <span style="font-size:11px;color:var(--muted);">${fmtDay(q.created_at)}</span>
+      </div>
+      <div style="font-size:16px;font-weight:700;">${esc(c.company_name || 'Unknown customer')}</div>
+      ${c.contact_person ? `<div style="font-size:13px;color:var(--muted);">${esc(c.contact_person)}</div>` : ''}
+      ${c.phone ? `<div style="font-size:13px;color:var(--muted);">${esc(c.phone)}</div>` : ''}
     </div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost" style="flex:1;" onclick="startEdit2(${id})"><i class="ti ti-edit"></i> Edit</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="adjustCart(${id},1);nav('s-home')">
-        <i class="ti ti-plus"></i> ${inCart > 0 ? 'Add another' : 'Add to quote'}
-      </button>
+    ${q.notes ? `<div class="qd-box" style="font-size:13px;"><div class="sec-head" style="margin-top:0;">Your notes</div>${esc(q.notes)}</div>` : ''}
+    ${q.hq_notes ? `<div class="qd-box" style="font-size:13px;"><div class="sec-head" style="margin-top:0;">HQ notes</div>${esc(q.hq_notes)}</div>` : ''}
+    <div class="sec-head">Items</div>
+    <div class="qd-box">
+      ${items.length ? items.map(it => {
+        const qty = parseFloat(it.qty || 0), base = parseFloat(it.base_price || 0), d = parseFloat(it.disc_pct || 0), g = parseFloat(it.gst_pct || 0);
+        const taxable = base * qty * (1 - d / 100);
+        return `<div class="qd-item">
+          <div class="qd-name">${esc(it.product_name)}</div>
+          <div class="qd-line"><span>${qty}${it.unit ? ' ' + esc(it.unit) : ''} × ${fmt(base)}</span><span>Discount <b>${d}%</b></span></div>
+          <div class="qd-line"><span>Excl. GST <b>${fmt(taxable)}</b></span><span>Incl. GST ${g}% <b>${fmt(taxable * (1 + g / 100))}</b></span></div>
+        </div>`;
+      }).join('') : '<div style="font-size:13px;color:var(--muted);">No items on this quote.</div>'}
+    </div>
+    <div class="total-bar">
+      <div class="tb-row"><span>Subtotal at list price</span><span>${fmt(t.list)}</span></div>
+      <div class="tb-row"><span>Discount</span><span>− ${fmt(t.disc)}</span></div>
+      <div class="tb-row"><span>Total excl. GST</span><span>${fmt(t.taxable)}</span></div>
+      <div class="tb-row"><span>GST</span><span>${fmt(t.gst)}</span></div>
+      <div class="tb-grand"><span class="lbl">Total incl. GST</span><span class="amt">${fmt(t.grand)}</span></div>
+    </div>
+    <button class="btn-wa" style="margin-top:14px;" onclick="sendSavedEstimate(${q.id})">
+      <i class="ti ti-brand-whatsapp" style="font-size:20px;"></i> Send Estimate to Client
+    </button>
+    <p class="hint">Shows quantity, rate, GST and total only. Discounts are never shown to the client.</p>
+    <div style="height:20px;"></div>`;
+  nav('s-qdetail');
+}
+
+// ── Client estimate: discounted rate only, never the discount itself ──
+function estimateText(custName, refLine, lines, t) {
+  return `Dear ${custName || 'Customer'},\n\nThank you for your enquiry. Please find our estimate below.\n${refLine}\n\n*Items:*\n${lines.join('\n\n')}\n\n──────────────────\nAmount (excl. GST): ${fmt(t.taxable)}\nGST: ${fmt(t.gst)}\n*Estimated Total (incl. GST): ${fmt(t.grand)}*\n──────────────────\n\nThis is an estimate. Our formal quotation will follow.\n\n*${COMPANY}*\n${COMPANY_ADDR}`;
+}
+function estimateLine(name, unit, qty, rate) {
+  return `  • *${name}*${unit ? ' (' + unit + ')' : ''} x ${qty}\n    Rate: ${fmt(rate)}  |  Amount: ${fmt(rate * qty)}`;
+}
+function waPhone(raw) {
+  let phone = String(raw || '').replace(/\D/g, '');
+  if (phone.length === 10) phone = '91' + phone;
+  return phone.length >= 11 ? phone : '';
+}
+function sendSavedEstimate(id) {
+  const q = myQuotes.find(x => x.id === id);
+  if (!q) return;
+  const c = q.customers || {};
+  const phone = waPhone(c.phone);
+  if (!phone) { toast('No WhatsApp number saved for this customer'); return; }
+  const items = (q.quote_items || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  const lines = items.map(it => estimateLine(it.product_name, it.unit, parseFloat(it.qty || 0),
+    parseFloat(it.base_price || 0) * (1 - parseFloat(it.disc_pct || 0) / 100)));
+  const msg = estimateText(c.company_name, `Ref: ${q.quote_ref} | Date: ${fmtDay(q.created_at)}`, lines, quoteTotals(q));
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  toast('Opening WhatsApp with the estimate…');
+}
+function sendEstimateToClient() {
+  if (!Object.keys(draft.cart).length) { toast('Add products first'); goStep(2); return; }
+  if (!draft.cust.name.trim()) { toast('Enter customer name first'); goStep(1); return; }
+  const phone = waPhone(draft.cust.phone);
+  if (!phone) { toast('Enter the client WhatsApp number first'); goStep(1); return; }
+  const lines = Object.entries(draft.cart).map(([id, qty]) => {
+    const p = prod(id); if (!p) return null;
+    return estimateLine(p.name, p.unit, qty, p.price * (1 - getDisc(id) / 100));
+  }).filter(Boolean);
+  const msg = estimateText(draft.cust.name.trim(), `Date: ${fmtDay(Date.now())}`, lines, draftTotals());
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  toast('Opening WhatsApp with the estimate…');
+}
+
+// ═════════ NEW QUOTE ═════════
+function startQuote() {
+  ['name', 'contact', 'phone', 'email', 'site', 'notes'].forEach(k => { document.getElementById('c-' + k).value = draft.cust[k] || ''; });
+  document.getElementById('pick-search').value = '';
+  pickCat = 'All';
+  hideSuggest();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-quote').classList.add('active');
+  // Resume where the work actually is
+  showStep(!draft.cust.name.trim() ? 1 : (Object.keys(draft.cart).length ? 3 : 2));
+}
+function discardDraft() {
+  if (draftHasContent() && !confirm('Discard this unfinished quote?')) return;
+  draft = emptyDraft(); saveDraft();
+  nav('s-home', true); renderMyQuotes();
+}
+function stepBack() {
+  if (step > 1) showStep(step - 1); else { nav('s-home', true); renderMyQuotes(); }
+}
+function goStep(n) {
+  if (n >= 2 && !draft.cust.name.trim()) { toast('Enter the customer name first'); showStep(1); document.getElementById('c-name').focus(); return; }
+  if (n >= 3 && !Object.keys(draft.cart).length) { toast('Add at least one product'); showStep(2); return; }
+  showStep(n);
+}
+function showStep(n) {
+  step = n;
+  hideSuggest();
+  [1, 2, 3].forEach(i => {
+    document.getElementById('qp-' + i).style.display = i === n ? (i === 2 ? 'flex' : 'block') : 'none';
+    const el = document.getElementById('st-' + i);
+    el.classList.toggle('active', i === n);
+    el.classList.toggle('done', i < n);
+  });
+  if (n === 2) renderPick();
+  if (n === 3) renderReview();
+}
+
+// ── Step 1: customer ──
+function saveCust() {
+  ['name', 'contact', 'phone', 'email', 'site', 'notes'].forEach(k => { draft.cust[k] = document.getElementById('c-' + k).value; });
+  saveDraft();
+}
+let suggestList = [];
+function onCustInput() {
+  saveCust();
+  const q = draft.cust.name.trim().toLowerCase();
+  const box = document.getElementById('cust-suggest');
+  suggestList = q.length < 2 ? [] : customers.filter(c => (c.company_name || '').toLowerCase().includes(q)).slice(0, 6);
+  // Nothing to offer once the name is an exact match
+  if (!suggestList.length || (suggestList.length === 1 && suggestList[0].company_name.toLowerCase() === q)) { hideSuggest(); return; }
+  box.innerHTML = suggestList.map((c, i) => `<div class="cs-row" onclick="pickCustomer(${i})">
+    <div class="cs-name">${esc(c.company_name)}</div>
+    <div class="cs-sub">${esc([c.contact_person, c.phone].filter(Boolean).join(' · ') || 'Existing customer')}</div>
+  </div>`).join('');
+  box.style.display = 'block';
+}
+function hideSuggest() { const b = document.getElementById('cust-suggest'); b.style.display = 'none'; b.innerHTML = ''; }
+function pickCustomer(i) {
+  const c = suggestList[i]; if (!c) return;
+  document.getElementById('c-name').value = c.company_name || '';
+  document.getElementById('c-contact').value = c.contact_person || '';
+  document.getElementById('c-phone').value = c.phone || '';
+  document.getElementById('c-email').value = c.email || '';
+  saveCust(); hideSuggest();
+}
+
+// ── Step 2: pick products ──
+function setQty(id, qty) {
+  qty = Math.max(0, Math.floor(Number(qty) || 0));
+  if (qty <= 0) { delete draft.cart[id]; delete draft.discounts[id]; } else draft.cart[id] = qty;
+  saveDraft();
+}
+function qtyStepper(id, qty, fn) {
+  return `<div class="stepper">
+    <button aria-label="Less" onclick="${fn}(${id},${qty - 1})">−</button>
+    <input type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Quantity" value="${qty}"
+      onfocus="this.select()" onchange="${fn}(${id},this.value)" onkeydown="if(event.key==='Enter')this.blur()"/>
+    <button aria-label="More" onclick="${fn}(${id},${qty + 1})">+</button>
+  </div>`;
+}
+function pickRowHtml(p) {
+  const qty = draft.cart[p.id] || 0;
+  return `<div class="pk-row${qty ? ' in' : ''}" id="pk-${p.id}">
+    <div class="pk-body">
+      <div class="pk-name">${esc(p.name)}</div>
+      <div class="pk-sub">${esc(p.cat || '')}${p.unit ? ' · ' + esc(p.unit) : ''}</div>
+      <div class="pk-price">${fmt(totalInc(p))} <span style="font-weight:500;color:var(--muted);font-size:11px;">incl. GST · base ${fmt(p.price)}</span></div>
+    </div>
+    ${qty ? qtyStepper(p.id, qty, 'pickSet') : `<button class="btn btn-primary btn-sm" onclick="pickSet(${p.id},1)"><i class="ti ti-plus"></i> Add</button>`}
+  </div>`;
+}
+function pickSet(id, qty) {
+  setQty(id, qty);
+  const row = document.getElementById('pk-' + id), p = prod(id);
+  if (row && p) row.outerHTML = pickRowHtml(p);
+  renderPickBar();
+}
+function renderPickBar() {
+  const t = draftTotals();
+  document.getElementById('pick-count').textContent = t.lines ? `${t.lines} product${t.lines === 1 ? '' : 's'} · ${t.units} unit${t.units === 1 ? '' : 's'}` : 'No items yet';
+  document.getElementById('pick-total').textContent = t.lines ? fmt(t.grand) + ' incl. GST' : 'Search and tap Add';
+}
+function filterProducts(q, cat) {
+  q = (q || '').toLowerCase().trim();
+  const words = q.split(/\s+/).filter(Boolean);
+  return products.filter(p => {
+    if (cat !== 'All' && p.cat !== cat) return false;
+    const hay = (p.name + ' ' + (p.cat || '') + ' ' + (p.desc || '')).toLowerCase();
+    return words.every(w => hay.includes(w));
+  });
+}
+function chipsHtml(active, setter) {
+  return ['All', ...new Set(products.map(p => p.cat).filter(Boolean))].map((c, i) =>
+    `<span class="chip${active === c ? ' active' : ''}" onclick="${setter}(${i})">${esc(c)}</span>`).join('');
+}
+function catByIndex(i) { return ['All', ...new Set(products.map(p => p.cat).filter(Boolean))][i] || 'All'; }
+function setPickCat(i) { pickCat = catByIndex(i); renderPick(); }
+function setActiveCat(i) { activeCat = catByIndex(i); renderCat(); }
+function moreNote(total) {
+  return total > MAX_ROWS ? `<div class="more-note">Showing ${MAX_ROWS} of ${total}. Type more of the name to narrow it down.</div>` : '';
+}
+function renderPick() {
+  document.getElementById('pick-chips').innerHTML = chipsHtml(pickCat, 'setPickCat');
+  const all = filterProducts(document.getElementById('pick-search').value, pickCat);
+  // Products already on the quote stay at the top so they are easy to find again
+  all.sort((a, b) => (draft.cart[b.id] ? 1 : 0) - (draft.cart[a.id] ? 1 : 0));
+  const list = document.getElementById('pick-list');
+  list.innerHTML = all.length
+    ? all.slice(0, MAX_ROWS).map(pickRowHtml).join('') + moreNote(all.length)
+    : `<div class="empty"><i class="ti ti-package-off"></i><p>${products.length ? 'No products match that search.' : 'Could not load products.<br/>Check your connection and reopen the app.'}</p></div>`;
+  renderPickBar();
+}
+
+// ── Step 3: review ──
+function reviewSetQty(id, qty) { setQty(id, qty); if (!Object.keys(draft.cart).length) { showStep(2); return; } renderReview(); }
+function setDisc(id, v) {
+  draft.discounts[id] = Math.max(0, Math.min(100, parseFloat(v) || 0));
+  saveDraft(); renderReview();
+}
+function renderReview() {
+  const c = draft.cust;
+  document.getElementById('review-cust').innerHTML = `<div class="qd-box" style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+    <div style="min-width:0;">
+      <div style="font-size:16px;font-weight:700;">${esc(c.name)}</div>
+      ${[c.contact, c.phone].filter(Boolean).length ? `<div style="font-size:13px;color:var(--muted);">${esc([c.contact, c.phone].filter(Boolean).join(' · '))}</div>` : ''}
+      ${c.site ? `<div style="font-size:12px;color:var(--muted);">Site: ${esc(c.site)}</div>` : ''}
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="showStep(1)">Edit</button>
+  </div>`;
+  document.getElementById('quote-list').innerHTML = Object.entries(draft.cart).map(([id, qty]) => {
+    const p = prod(id); if (!p) return '';
+    const disc = getDisc(id), rate = p.price * (1 - disc / 100), taxable = rate * qty, gst = taxable * p.gst / 100;
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-sm);margin-bottom:10px;overflow:hidden;">
+      <div style="display:flex;gap:10px;padding:11px;align-items:center;">
+        <div style="flex:1;min-width:0;">
+          <div class="pk-name">${esc(p.name)}</div>
+          <div class="pk-sub">List ${fmt(p.price)}${p.unit ? ' / ' + esc(p.unit) : ''}${disc > 0 ? ' · after discount ' + fmt(rate) : ''}</div>
+        </div>
+        ${qtyStepper(id, qty, 'reviewSetQty')}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:9px 11px;border-top:1px solid var(--border);background:var(--surface2);">
+        <span style="font-size:12px;color:var(--muted);">Discount</span>
+        <input class="disc-input" type="text" inputmode="decimal" value="${disc}" aria-label="Discount percent"
+          onfocus="this.select()" onchange="setDisc(${id},this.value)" onkeydown="if(event.key==='Enter')this.blur()" style="width:58px;padding:5px 6px;"/>
+        <span style="font-size:13px;font-weight:700;">%</span>
+        <span style="flex:1;text-align:right;font-size:11px;color:var(--muted);">Excl. GST ${fmt(taxable)}</span>
+        <span style="font-size:14px;font-weight:700;color:var(--saffron);">${fmt(taxable + gst)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  const t = draftTotals();
+  document.getElementById('review-totals').innerHTML = `<div class="total-bar">
+    <div class="tb-row"><span>Subtotal at list price</span><span>${fmt(t.list)}</span></div>
+    ${t.disc > 0 ? `<div class="tb-row"><span>Discount</span><span>− ${fmt(t.disc)}</span></div>` : ''}
+    <div class="tb-row"><span>Total excl. GST</span><span>${fmt(t.taxable)}</span></div>
+    <div class="tb-row"><span>GST</span><span>${fmt(t.gst)}</span></div>
+    <div class="tb-grand"><span class="lbl">Total incl. GST</span><span class="amt">${fmt(t.grand)}</span></div>
+  </div>`;
+}
+
+async function submitToHQ() {
+  if (!Object.keys(draft.cart).length) { toast('Add products first'); showStep(2); return; }
+  if (!draft.cust.name.trim()) { toast('Enter the customer name first'); showStep(1); return; }
+  const ref = quoteNum();
+  const quoteData = {
+    ref, custName: draft.cust.name.trim(),
+    contact: draft.cust.contact.trim(), phone: draft.cust.phone.trim(), email: draft.cust.email.trim(),
+    site: draft.cust.site.trim(), notes: draft.cust.notes.trim(),
+    items: Object.entries(draft.cart).map(([id, qty]) => {
+      const p = prod(id);
+      return p ? { id: p.id, name: p.name, hsn: p.hsn, unit: p.unit, qty, price: p.price, gst: p.gst, disc: getDisc(id) } : null;
+    }).filter(Boolean),
+  };
+  const btn = document.getElementById('submit-hq-btn');
+  const label = btn.innerHTML;
+  btn.disabled = true; btn.style.opacity = '.6'; btn.innerHTML = 'Submitting…';
+  const savedId = await sbSaveQuote(quoteData);
+  btn.disabled = false; btn.style.opacity = ''; btn.innerHTML = label;
+  if (!savedId) {
+    // HQ only learns of a quote through this save, so a failure must be loud. The draft is kept.
+    toast('Not sent — check your connection and try again');
+    return;
+  }
+  draft = emptyDraft(); saveDraft();
+  nav('s-home');
+  toast(`Quote ${ref} sent to HQ ✓`);
+}
+
+// ═════════ PRODUCTS: PRICE CHECK ═════════
+function renderCat() {
+  document.getElementById('cat-chips').innerHTML = chipsHtml(activeCat, 'setActiveCat');
+  const all = filterProducts(document.getElementById('search-inp').value, activeCat);
+  const list = document.getElementById('cat-list');
+  if (!all.length) {
+    list.innerHTML = `<div class="empty"><i class="ti ti-package-off"></i><p>${products.length ? 'No products match that search.' : 'Could not load products.<br/>Check your connection and reopen the app.'}</p></div>`;
+    return;
+  }
+  list.innerHTML = all.slice(0, MAX_ROWS).map(p => {
+    const thumb = p.photo
+      ? `<div class="prod-thumb"><img src="${esc(p.photo)}" alt="" loading="lazy"/></div>`
+      : `<div class="prod-thumb">${esc(p.emoji || '📦')}</div>`;
+    return `<div class="prod-card" onclick="openDetail(${p.id})" style="cursor:pointer;">
+      ${thumb}
+      <div class="prod-info">
+        ${p.cat ? `<span class="prod-cat">${esc(p.cat)}</span>` : ''}
+        <div class="prod-name">${esc(p.name)}</div>
+        <div class="prod-price">${fmt(totalInc(p))}</div>
+        <div class="prod-gst">incl. ${p.gst}% GST · base ${fmt(p.price)}${p.unit ? ' / ' + esc(p.unit) : ''}</div>
+      </div>
+    </div>`;
+  }).join('') + moreNote(all.length);
+}
+function openDetail(id) {
+  const p = prod(id); if (!p) return;
+  document.getElementById('detail-title').textContent = p.name;
+  document.getElementById('detail-hero').innerHTML = p.photo ? `<img src="${esc(p.photo)}" alt=""/>` : esc(p.emoji || '📦');
+  const gstAmt = p.price * p.gst / 100;
+  document.getElementById('detail-body').innerHTML = `
+    ${p.cat ? `<span class="prod-cat">${esc(p.cat)}</span>` : ''}
+    <h2 style="font-size:20px;font-weight:700;margin:8px 0 6px;">${esc(p.name)}</h2>
+    ${p.desc ? `<p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px;">${esc(p.desc)}</p>` : ''}
+    <div class="price-box">
+      <div class="pb-row"><span>Base price</span><span>${fmt(p.price)}</span></div>
+      <div class="pb-row"><span>GST @ ${p.gst}%</span><span>${fmt(gstAmt)}</span></div>
+      <div class="pb-row pb-total"><span>Total incl. GST</span><span>${fmt(p.price + gstAmt)}</span></div>
+      ${p.hsn ? `<div style="font-size:11px;color:var(--muted);margin-top:6px;">HSN/SAC: ${esc(p.hsn)}</div>` : ''}
+      ${p.unit ? `<div style="font-size:11px;color:var(--muted);">Unit: ${esc(p.unit)}</div>` : ''}
     </div>`;
   nav('s-detail');
 }
 
-// ── Add / Edit ──
-function startAdd() {
-  editId = null; pendingPhoto = null;
-  clearForm();
-  populateCatDatalist();
-  document.getElementById('add-title').textContent = 'Add product';
-  document.getElementById('save-lbl').textContent = 'Save product';
-  document.getElementById('delete-wrap').style.display = 'none';
-  nav('s-add');
-}
-function startEdit() {
-  const id = parseInt(document.getElementById('detail-title').dataset.id || 0);
-  startEdit2(id);
-}
-function startEdit2(id) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-  editId = id; pendingPhoto = p.photo || null;
-  document.getElementById('add-title').textContent = 'Edit product';
-  document.getElementById('save-lbl').textContent = 'Save changes';
-  document.getElementById('delete-wrap').style.display = 'block';
-  document.getElementById('f-name').value = p.name;
-  document.getElementById('f-cat').value = p.cat || '';
-  document.getElementById('f-desc').value = p.desc || '';
-  document.getElementById('f-price').value = p.price;
-  document.getElementById('f-gst').value = p.gst;
-  document.getElementById('f-hsn').value = p.hsn || '';
-  document.getElementById('f-unit').value = p.unit || '';
-  if (p.photo) {
-    const img = document.getElementById('photo-preview');
-    img.src = p.photo; img.style.display = 'block';
-    document.getElementById('photo-change-btn').style.display = 'block';
-  } else {
-    clearPhotoUI();
-  }
-  populateCatDatalist();
-  updatePreview();
-  nav('s-add');
-}
-function clearForm() {
-  ['f-name','f-cat','f-desc','f-hsn','f-unit'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-price').value = '';
-  document.getElementById('f-gst').value = '18';
-  pendingPhotoFile = null;
-  clearPhotoUI();
-  updatePreview();
-}
-function clearPhotoUI() {
-  const img = document.getElementById('photo-preview');
-  img.src = ''; img.style.display = 'none';
-  document.getElementById('photo-change-btn').style.display = 'none';
-  pendingPhoto = null; pendingPhotoFile = null;
-}
-function onPhotoSelect(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  pendingPhotoFile = file;
-  pendingPhoto = URL.createObjectURL(file); // local preview only
-  const img = document.getElementById('photo-preview');
-  img.src = pendingPhoto; img.style.display = 'block';
-  document.getElementById('photo-change-btn').style.display = 'block';
-  toast('Photo ready — will upload on save');
-}
-function updatePreview() {
-  const base = parseFloat(document.getElementById('f-price').value) || 0;
-  const gst = parseInt(document.getElementById('f-gst').value) || 0;
-  const gstAmt = base * gst / 100;
-  document.getElementById('pp-base').textContent = fmt(base);
-  document.getElementById('pp-gst-lbl').textContent = `GST (${gst}%)`;
-  document.getElementById('pp-gst').textContent = fmt(gstAmt);
-  document.getElementById('pp-total').textContent = fmt(base + gstAmt);
-}
-async function saveProduct() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { toast('Please enter a product name'); return; }
-  const price = parseFloat(document.getElementById('f-price').value) || 0;
-  try {
-    toast('Saving...');
-    // Upload photo to Supabase Storage if a new photo was selected
-    let photoUrl = null;
-    if (pendingPhotoFile) {
-      const ext  = pendingPhotoFile.name.split('.').pop() || 'jpg';
-      const path = 'products/' + Date.now() + '.' + ext;
-      const { data: upData, error: upErr } = await supa.storage
-        .from('product-photos')
-        .upload(path, pendingPhotoFile, { upsert: true, contentType: pendingPhotoFile.type });
-      if (upErr) throw upErr;
-      const { data: urlData } = supa.storage.from('product-photos').getPublicUrl(path);
-      photoUrl = urlData.publicUrl;
-      toast('Photo uploaded ✓');
-    } else if (editId) {
-      // Keep existing photo if not changed
-      const existing = products.find(p => p.id === editId);
-      photoUrl = existing ? existing.photo : null;
-    }
-    const prod = {
-      id: editId || null, _new: !editId,
-      name, cat: document.getElementById('f-cat').value.trim(),
-      desc: document.getElementById('f-desc').value.trim(),
-      photo: photoUrl,
-      emoji: photoUrl ? null : '📦',
-      price, gst: parseInt(document.getElementById('f-gst').value),
-      hsn: document.getElementById('f-hsn').value.trim(),
-      unit: document.getElementById('f-unit').value.trim(),
-    };
-    const savedId = await sbSaveProduct(prod);
-    prod.id = savedId; prod._new = false;
-    if (editId) {
-      const i = products.findIndex(p => p.id === editId);
-      if (i >= 0) products[i] = prod; else products.unshift(prod);
-    } else {
-      products.unshift(prod);
-    }
-    toast(editId ? 'Product updated' : 'Product saved');
-    editId = null; pendingPhoto = null; pendingPhotoFile = null;
-    nav('s-home');
-  } catch(e) {
-    toast('Error saving product — check connection');
-    console.error(e);
-  }
-}
-async function deleteProduct() {
-  if (!editId) return;
-  if (!confirm('Delete this product?')) return;
-  try {
-    await sbDeleteProduct(editId);
-    products = products.filter(p => p.id !== editId);
-    delete cart[editId]; delete discounts[editId];
-    toast('Product deleted');
-    editId = null;
-    nav('s-home');
-  } catch(e) { toast('Error deleting — check connection'); }
-}
-
-// ── Quote tabs ──
-function qTab(t) {
-  ['items','customer','submit'].forEach(x => {
-    document.getElementById('qt-' + x).classList.toggle('active', x === t);
-    document.getElementById('qp-' + x).style.display = x === t ? 'block' : 'none';
-  });
-  if (t === 'submit') renderSubmitPreview();
-}
-function renderQuote() {
-  const list = document.getElementById('quote-list');
-  const items = Object.entries(cart);
-  if (!items.length) {
-    list.innerHTML = '<div class="empty"><i class="ti ti-shopping-cart-off"></i><p>No items yet.<br/>Add products from the catalogue.</p></div>';
-    return;
-  }
-  let subBase = 0, subGst = 0, totalDisc = 0;
-  const rows = items.map(([id, qty]) => {
-    const p = products.find(x => x.id == id); if (!p) return '';
-    const disc         = getDisc(id);
-    const unitBase     = p.price;
-    const unitDiscAmt  = unitBase * disc / 100;
-    const unitTaxable  = unitBase - unitDiscAmt;           // discounted base
-    const unitGst      = unitTaxable * p.gst / 100;        // GST on discounted base
-    const unitNet      = unitTaxable + unitGst;            // unit final price
-    const lineBase     = unitBase * qty;
-    const lineDiscAmt  = unitDiscAmt * qty;
-    const lineTaxable  = unitTaxable * qty;
-    const lineGst      = unitGst * qty;
-    const lineNet      = lineTaxable + lineGst;
-    subBase    += lineBase;
-    totalDisc  += lineDiscAmt;
-    subGst     += lineGst;
-    const thumb = p.photo
-      ? `<div class="qi-thumb"><img src="${p.photo}" alt="${p.name}" loading="lazy"/></div>`
-      : `<div class="qi-thumb">${p.emoji || '📦'}</div>`;
-    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-sm);margin-bottom:10px;overflow:hidden;">
-      <div style="display:flex;gap:10px;padding:11px 11px 8px;align-items:center;">
-        ${thumb}
-        <div style="flex:1;min-width:0;">
-          <div class="qi-name">${p.name}</div>
-          ${p.cat ? `<div style="font-size:10px;color:var(--muted);margin-top:1px;">${p.cat}${p.unit ? ' · ' + p.unit : ''}</div>` : ''}
-        </div>
-        <div class="stepper">
-          <button onclick="adjustCart(${id},-1)">&#8722;</button>
-          <span>${qty}</span>
-          <button onclick="adjustCart(${id},1)">+</button>
-        </div>
-      </div>
-      <div style="background:var(--surface2);padding:8px 11px;font-size:12px;border-top:1px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-          <span style="color:var(--muted);">Unit price (excl. GST)</span>
-          <span style="font-weight:600;">${fmt(unitBase)}</span>
-        </div>
-        ${disc > 0 ? `
-        <div style="display:flex;justify-content:space-between;margin-bottom:3px;color:var(--saffron);">
-          <span>Discount on base (${disc}%)</span><span>− ${fmt(unitDiscAmt)} / unit</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-          <span style="color:var(--muted);">Taxable value / unit</span>
-          <span style="font-weight:600;">${fmt(unitTaxable)}</span>
-        </div>` : ''}
-        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-          <span style="color:var(--muted);">GST ${p.gst}% on taxable × ${qty}</span>
-          <span style="font-weight:600;">${fmt(lineGst)}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-          <span style="color:var(--muted);">Unit net price (after disc + GST)</span>
-          <span style="font-weight:600;">${fmt(unitNet)}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border-md);padding-top:6px;margin-top:4px;">
-          <span style="font-weight:700;">Line Total (× ${qty})</span>
-          <span style="font-weight:700;color:var(--saffron);font-size:14px;">${fmt(lineNet)}</span>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-top:1px solid var(--border);">
-        <span style="font-size:12px;color:var(--muted);flex:1;">Agent discount proposal</span>
-        <input class="disc-input" type="number" min="0" max="100" step="0.5" value="${disc}"
-          oninput="setDisc(${id},this.value)" style="width:62px;font-size:14px;padding:5px 8px;"/>
-        <span style="font-size:13px;font-weight:700;">%</span>
-      </div>
-    </div>`;
-  }).filter(Boolean);
-  const grand = subBase - totalDisc + subGst;
-  list.innerHTML = rows.join('') + `<div class="total-bar">
-    <div class="tb-row"><span>Subtotal (excl. GST)</span><span>${fmt(subBase)}</span></div>
-    ${totalDisc > 0 ? `<div class="tb-row"><span>Total Discount (on base)</span><span>− ${fmt(totalDisc)}</span></div>` : ''}
-    <div class="tb-row"><span>Total Taxable Value</span><span>${fmt(subBase - totalDisc)}</span></div>
-    <div class="tb-row"><span>Total GST</span><span>${fmt(subGst)}</span></div>
-    <div class="tb-grand"><span class="lbl">Grand Total (incl. GST)</span><span class="amt">${fmt(grand)}</span></div>
-  </div>`;
-}
-
-// ── Submit preview + WA message ──
-function buildQuoteText(forHQ = true, overrideRef = null) {
-  const custName = document.getElementById('c-name').value.trim() || 'Customer';
-  const contact  = document.getElementById('c-contact').value.trim();
-  const phone    = document.getElementById('c-phone').value.trim();
-  const site     = document.getElementById('c-site').value.trim();
-  const notes    = document.getElementById('c-notes').value.trim();
-  const ref      = overrideRef || quoteNum();
-  const today    = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  const items    = Object.entries(cart);
-
-  let subBase = 0, subGst = 0, totalDisc = 0;
-  const clientLines = [];
-  const lines = items.map(([id, qty]) => {
-    const p = products.find(x => x.id == id); if (!p) return '';
-    const disc         = getDisc(id);
-    const unitBase     = p.price;
-    const unitDiscAmt  = unitBase * disc / 100;
-    const unitTaxable  = unitBase - unitDiscAmt;
-    const unitGst      = unitTaxable * p.gst / 100;
-    const unitNet      = unitTaxable + unitGst;
-    const lineDiscAmt  = unitDiscAmt * qty;
-    const lineTaxable  = unitTaxable * qty;
-    const lineGst      = unitGst * qty;
-    const lineNet      = lineTaxable + lineGst;
-    subBase   += unitBase * qty;
-    totalDisc += lineDiscAmt;
-    subGst    += lineGst;
-    // Client-facing line: discounted rate only, never the discount itself
-    clientLines.push(`  • *${p.name}*${p.unit ? ' (' + p.unit + ')' : ''} x ${qty}\n    Rate: ${fmt(unitTaxable)}  |  Amount: ${fmt(lineTaxable)}`);
-    return `  • *${p.name}*${p.unit ? ' (' + p.unit + ')' : ''} x ${qty}\n    Unit net price (after disc & GST): *${fmt(unitNet)}*\n    Base: ${fmt(unitBase)}${disc > 0 ? ` - Disc ${disc}%: -${fmt(unitDiscAmt)} = Taxable: ${fmt(unitTaxable)}` : ''} + GST ${p.gst}%: ${fmt(unitGst)}\n    Line Total: *${fmt(lineNet)}*`;
-  }).filter(Boolean);
-
-  const grand = subBase - totalDisc + subGst;
-
-  if (forHQ) {
-    return `📋 *DRAFT QUOTE – PLEASE REVIEW*\nRef: ${ref} | Date: ${today}\nArea Manager: *${AGENT_NAME}*\n\n*Customer:* ${custName}${contact ? ' (' + contact + ')' : ''}${phone ? '\nPhone: ' + phone : ''}${site ? '\nSite: ' + site : ''}\n\n*Items:*\n${lines.join('\n\n')}\n\n──────────────────\nSubtotal (excl. GST): ${fmt(subBase)}\n${totalDisc > 0 ? `Discount (on base): −${fmt(totalDisc)}\nTaxable Value: ${fmt(subBase - totalDisc)}\n` : ''}Total GST: ${fmt(subGst)}\n*GRAND TOTAL: ${fmt(grand)}*\n──────────────────\n${notes ? 'Notes: ' + notes + '\n' : ''}\n⚠️ This is a DRAFT. Please review, adjust if needed, then send to client.\n\n_${COMPANY}_`;
-  }
-  return `Dear ${custName},\n\nThank you for your enquiry. Please find our estimate below.\nDate: ${today}\n\n*Items:*\n${clientLines.join('\n\n')}\n\n──────────────────\nAmount (excl. GST): ${fmt(subBase - totalDisc)}\nGST: ${fmt(subGst)}\n*Estimated Total (incl. GST): ${fmt(grand)}*\n──────────────────\n\nThis is an estimate. Our formal quotation will follow.\n\n*${COMPANY}*\n${COMPANY_ADDR}`;
-}
-
-let submittedSig = null, submittedRef = null;
-function draftSig() {
-  return JSON.stringify([cart, discounts, document.getElementById('c-name').value.trim()]);
-}
-function syncSubmitBtn() {
-  const btn = document.getElementById('submit-hq-btn');
-  if (!btn) return;
-  const done = submittedSig !== null && submittedSig === draftSig();
-  btn.disabled = done;
-  btn.style.opacity = done ? '.55' : '';
-  btn.innerHTML = done
-    ? `<i class="ti ti-circle-check"></i> Sent to HQ · ${submittedRef}`
-    : '<i class="ti ti-send"></i> Submit Quote to HQ';
-}
-
-function renderSubmitPreview() {
-  syncSubmitBtn();
-  const items = Object.entries(cart);
-  if (!items.length) {
-    document.getElementById('submit-preview').innerHTML = '<div class="empty"><i class="ti ti-alert-circle"></i><p>Add products before submitting.</p></div>';
-    return;
-  }
-  let grand = 0;
-  items.forEach(([id, qty]) => {
-    const p = products.find(x => x.id == id); if (!p) return;
-    const disc        = getDisc(id);
-    const taxable     = p.price * (1 - disc / 100) * qty;
-    const gst         = taxable * p.gst / 100;
-    grand += taxable + gst;
-  });
-  const custName = document.getElementById('c-name').value.trim() || '—';
-  document.getElementById('submit-preview').innerHTML = `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-sm);padding:14px;margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:12px;color:var(--muted);">Customer</span>
-        <span style="font-size:13px;font-weight:700;">${custName}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:12px;color:var(--muted);">Products</span>
-        <span style="font-size:13px;font-weight:700;">${items.length} item${items.length > 1 ? 's' : ''}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">
-        <span style="font-size:12px;color:var(--muted);">Draft total</span>
-        <span style="font-size:16px;font-weight:700;color:var(--saffron);">${fmt(grand)}</span>
-      </div>
-    </div>`;
-}
-
-function sendEstimateToClient() {
-  if (!Object.keys(cart).length) { toast('Add products first'); qTab('items'); return; }
-  if (!document.getElementById('c-name').value.trim()) { toast('Enter customer name first'); qTab('customer'); return; }
-  let phone = document.getElementById('c-phone').value.replace(/\D/g, '');
-  if (phone.length === 10) phone = '91' + phone;
-  if (phone.length < 11) { toast('Enter the client WhatsApp number first'); qTab('customer'); return; }
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(buildQuoteText(false))}`, '_blank');
-  toast('Opening WhatsApp with the estimate…');
-}
-
-async function submitToHQ() {
-  const items = Object.entries(cart);
-  if (!items.length) { toast('Add products first'); qTab('items'); return; }
-  const custName = document.getElementById('c-name').value.trim();
-  if (!custName) { toast('Enter customer name first'); qTab('customer'); return; }
-  const ref = quoteNum();
-  // Save to Supabase
-  const quoteData = {
-    ref,
-    custName,
-    contact: document.getElementById('c-contact').value.trim(),
-    phone:   document.getElementById('c-phone').value.trim(),
-    email:   document.getElementById('c-email').value.trim(),
-    site:    document.getElementById('c-site').value.trim(),
-    notes:   document.getElementById('c-notes').value.trim(),
-    items: items.map(([id, qty]) => {
-      const p = products.find(x => x.id == id);
-      return { id: p.id, name: p.name, hsn: p.hsn, unit: p.unit, qty, price: p.price, gst: p.gst, disc: getDisc(id) };
-    }),
-  };
-  const btn = document.getElementById('submit-hq-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="ti ti-loader"></i> Submitting…';
-  const savedId = await sbSaveQuote(quoteData);
-  if (!savedId) {
-    // HQ only learns of a quote through this save, so a failure must be loud
-    syncSubmitBtn();
-    toast('Not sent — check your connection and try again');
-    return;
-  }
-  submittedSig = draftSig(); submittedRef = ref;
-  syncSubmitBtn();
-  toast(`Quote ${ref} sent to HQ ✓`);
-}
-
-// ── Supabase helpers ──
-const SUPA_URL = 'https://cuxfvbtvmosmgvptygjy.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1eGZ2YnR2bW9zbWd2cHR5Z2p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MDk5NzYsImV4cCI6MjA5NjA4NTk3Nn0.tuSqeeKONTldWAX1mDwXJAuIjs3o2amcNbfvns-OH4o';
-const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
-
+// ═════════ DATA ═════════
 async function sbLoadProducts() {
   const { data, error } = await supa.from('products').select('*').eq('is_active', true).order('category').order('name');
   if (error) { console.error('Load products:', error); return []; }
@@ -948,31 +893,11 @@ async function sbLoadProducts() {
     hsn: p.hsn_code || '', unit: p.unit || '',
   }));
 }
-
-async function sbSaveProduct(prod) {
-  const row = {
-    name: prod.name, category: prod.cat, description: prod.desc,
-    photo_url: prod.photo || null, emoji: prod.emoji || '📦',
-    base_price: prod.price, gst_pct: prod.gst,
-    hsn_code: prod.hsn, unit: prod.unit, is_active: true,
-    updated_at: new Date().toISOString(),
-  };
-  if (prod.id && !prod._new) {
-    const { error } = await supa.from('products').update(row).eq('id', prod.id);
-    if (error) throw error;
-    return prod.id;
-  } else {
-    const { data, error } = await supa.from('products').insert(row).select('id').single();
-    if (error) throw error;
-    return data.id;
-  }
+async function sbLoadCustomers() {
+  const { data, error } = await supa.from('customers').select('id,company_name,contact_person,phone,email').order('company_name');
+  if (error) { console.error('Load customers:', error); return []; }
+  return data || [];
 }
-
-async function sbDeleteProduct(id) {
-  const { error } = await supa.from('products').update({ is_active: false }).eq('id', id);
-  if (error) throw error;
-}
-
 async function sbSaveQuote(quoteData) {
   try {
     let customerId = null;
@@ -1007,131 +932,25 @@ async function sbSaveQuote(quoteData) {
       throw iErr;
     }
     return q.id;
-  } catch(e) { console.error('Save quote:', e); return null; }
-}
-
-// ── My quotes: what this agent has submitted, read live from HQ's records ──
-let myQuotes = [];
-function esc(v) {
-  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function fmtDay(ts) {
-  return ts ? new Date(ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
-}
-function quoteTotals(q) {
-  let list = 0, disc = 0, gst = 0;
-  (q.quote_items || []).forEach(it => {
-    const base    = parseFloat(it.base_price || 0) * parseFloat(it.qty || 0);
-    const d       = base * parseFloat(it.disc_pct || 0) / 100;
-    list += base; disc += d; gst += (base - d) * parseFloat(it.gst_pct || 0) / 100;
-  });
-  return { list, disc, taxable: list - disc, gst, grand: list - disc + gst };
-}
-async function loadMyQuotes() {
-  const box = document.getElementById('mq-list');
-  box.innerHTML = '<div class="empty"><i class="ti ti-loader"></i><p>Loading your quotes…</p></div>';
-  const { data, error } = await supa.from('quotes')
-    .select('*, customers(company_name,contact_person,phone), quote_items(*)')
-    .eq('agent_name', AGENT_NAME)
-    .order('created_at', { ascending: false })
-    .limit(200);
-  if (error) {
-    console.error('Load my quotes:', error);
-    box.innerHTML = '<div class="empty"><i class="ti ti-wifi-off"></i><p>Could not load your quotes.<br/>Check your connection.</p><button class="btn btn-primary" style="margin-top:14px;" onclick="loadMyQuotes()">Try again</button></div>';
-    return;
-  }
-  myQuotes = data || [];
-  if (!myQuotes.length) {
-    box.innerHTML = '<div class="empty"><i class="ti ti-file-off"></i><p>No quotes yet.<br/>Quotes you submit to HQ appear here.</p></div>';
-    return;
-  }
-  box.innerHTML = myQuotes.map(q => {
-    const n = (q.quote_items || []).length;
-    return `<div class="mq-row" onclick="openMyQuote(${q.id})">
-      <div class="mq-top"><span class="mq-ref">${esc(q.quote_ref)}</span><span class="badge badge-${esc(q.status)}">${esc(q.status)}</span></div>
-      <div class="mq-cust">${esc((q.customers && q.customers.company_name) || 'Unknown customer')}</div>
-      <div class="mq-bot"><span class="mq-meta">${fmtDay(q.created_at)} · ${n} item${n === 1 ? '' : 's'}</span><span class="mq-amt">${fmt(quoteTotals(q).grand)}</span></div>
-    </div>`;
-  }).join('');
-}
-function openMyQuote(id) {
-  const q = myQuotes.find(x => x.id === id);
-  if (!q) return;
-  const c = q.customers || {};
-  const t = quoteTotals(q);
-  const items = (q.quote_items || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-  document.getElementById('qd-title').textContent = q.quote_ref || 'Quote';
-  document.getElementById('qd-body').innerHTML = `
-    <div class="qd-box">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span class="badge badge-${esc(q.status)}">${esc(q.status)}</span>
-        <span style="font-size:11px;color:var(--muted);">${fmtDay(q.created_at)}</span>
-      </div>
-      <div style="font-size:16px;font-weight:700;">${esc(c.company_name || 'Unknown customer')}</div>
-      ${c.contact_person ? `<div style="font-size:13px;color:var(--muted);">${esc(c.contact_person)}</div>` : ''}
-      ${c.phone ? `<div style="font-size:13px;color:var(--muted);">${esc(c.phone)}</div>` : ''}
-    </div>
-    ${q.notes ? `<div class="qd-box" style="font-size:13px;"><div class="sec-head" style="margin-top:0;">Your notes</div>${esc(q.notes)}</div>` : ''}
-    ${q.hq_notes ? `<div class="qd-box" style="font-size:13px;"><div class="sec-head" style="margin-top:0;">HQ notes</div>${esc(q.hq_notes)}</div>` : ''}
-    <div class="sec-head">Items</div>
-    <div class="qd-box">
-      ${items.length ? items.map(it => {
-        const qty  = parseFloat(it.qty || 0), base = parseFloat(it.base_price || 0), d = parseFloat(it.disc_pct || 0), g = parseFloat(it.gst_pct || 0);
-        const taxable = base * qty * (1 - d / 100);
-        return `<div class="qd-item">
-          <div class="qd-name">${esc(it.product_name)}</div>
-          <div class="qd-line"><span>${qty}${it.unit ? ' ' + esc(it.unit) : ''} × ${fmt(base)}</span><span>Discount <b>${d}%</b></span></div>
-          <div class="qd-line"><span>Excl. GST <b>${fmt(taxable)}</b></span><span>Incl. GST ${g}% <b>${fmt(taxable * (1 + g / 100))}</b></span></div>
-        </div>`;
-      }).join('') : '<div style="font-size:13px;color:var(--muted);">No items on this quote.</div>'}
-    </div>
-    <div class="total-bar">
-      <div class="tb-row"><span>Subtotal at list price</span><span>${fmt(t.list)}</span></div>
-      <div class="tb-row"><span>Discount</span><span>− ${fmt(t.disc)}</span></div>
-      <div class="tb-row"><span>Total excl. GST</span><span>${fmt(t.taxable)}</span></div>
-      <div class="tb-row"><span>GST</span><span>${fmt(t.gst)}</span></div>
-      <div class="tb-grand"><span class="lbl">Total incl. GST</span><span class="amt">${fmt(t.grand)}</span></div>
-    </div>
-    <button class="btn-wa" style="margin-top:14px;" onclick="sendSavedEstimate(${q.id})">
-      <i class="ti ti-brand-whatsapp" style="font-size:20px;"></i> Send Estimate to Client
-    </button>
-    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;">
-      Shows quantity, rate, GST and total only. Discounts are never shown to the client.
-    </p>
-    <div style="height:20px;"></div>`;
-  nav('s-qdetail');
-}
-function sendSavedEstimate(id) {
-  const q = myQuotes.find(x => x.id === id);
-  if (!q) return;
-  const c = q.customers || {};
-  let phone = String(c.phone || '').replace(/\D/g, '');
-  if (phone.length === 10) phone = '91' + phone;
-  if (phone.length < 11) { toast('No WhatsApp number saved for this customer'); return; }
-  const t = quoteTotals(q);
-  const items = (q.quote_items || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-  // Client-facing: discounted rate only, never the discount itself
-  const lines = items.map(it => {
-    const qty  = parseFloat(it.qty || 0);
-    const rate = parseFloat(it.base_price || 0) * (1 - parseFloat(it.disc_pct || 0) / 100);
-    return `  • *${it.product_name}*${it.unit ? ' (' + it.unit + ')' : ''} x ${qty}\n    Rate: ${fmt(rate)}  |  Amount: ${fmt(rate * qty)}`;
-  });
-  const msg = `Dear ${c.company_name || 'Customer'},\n\nThank you for your enquiry. Please find our estimate below.\nRef: ${q.quote_ref} | Date: ${fmtDay(q.created_at)}\n\n*Items:*\n${lines.join('\n\n')}\n\n──────────────────\nAmount (excl. GST): ${fmt(t.taxable)}\nGST: ${fmt(t.gst)}\n*Estimated Total (incl. GST): ${fmt(t.grand)}*\n──────────────────\n\nThis is an estimate. Our formal quotation will follow.\n\n*${COMPANY}*\n${COMPANY_ADDR}`;
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  toast('Opening WhatsApp with the estimate…');
+  } catch (e) { console.error('Save quote:', e); return null; }
 }
 
 // ── Boot ──
 async function boot() {
-  toast('Loading catalogue...');
-  products = await sbLoadProducts();
-  if (products.length === 0) {
-    document.getElementById('cat-list').innerHTML = '<div class="empty"><i class="ti ti-wifi-off"></i><p>Could not load products.<br/>Check your connection and refresh.</p></div>';
+  loadDraft();
+  renderDraftCard();
+  loadMyQuotes();
+  [products, customers] = await Promise.all([sbLoadProducts(), sbLoadCustomers()]);
+  // A saved draft may name products that have since been withdrawn
+  Object.keys(draft.cart).forEach(id => { if (!prod(id)) { delete draft.cart[id]; delete draft.discounts[id]; } });
+  if (products.length) saveDraft();
+  renderDraftCard();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { if (!document.fonts.check('16px "tabler-icons"')) document.body.classList.add('no-icons'); });
   }
-  renderCat();
-  updateCartUI();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
+document.addEventListener('click', e => { if (!e.target.closest('#cust-suggest') && e.target.id !== 'c-name') hideSuggest(); });
 boot();
 </script>
 </body>
