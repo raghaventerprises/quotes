@@ -699,7 +699,9 @@ function pickCustomer(i) {
 
 // ── Step 2: pick products ──
 function setQty(id, qty) {
-  qty = Math.max(0, Math.floor(Number(qty) || 0));
+  // An emptied box puts the old number back; only a typed 0 removes the item
+  if (typeof qty === 'string' && qty.replace(/[^0-9]/g, '') === '') return;
+  qty = Math.max(0, Math.floor(Number(String(qty).replace(/[^0-9]/g, '')) || 0));
   if (qty <= 0) { delete draft.cart[id]; delete draft.discounts[id]; } else draft.cart[id] = qty;
   saveDraft();
 }
